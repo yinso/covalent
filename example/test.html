@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>Test Title</title>
+    <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+    <script type="text/javascript" src="http://github.com/jashkenas/coffee-script/raw/master/extras/coffee-script.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.1/require.js" data-main="../lib/main"></script>
+    <script data-template-name="test" type="text/template">
+        <div>
+            <div data-bind="@text $accountHome.id"></div>
+            <input data-bind="@attr { value: $accountHome.name } @on { keyup: $accountHome.name = this.value }" />
+        </div>
+    </script>
+    <script data-template-name="test-list" type="text/template">
+        <ul data-bind="@each: $foo, 'test-list-item'">
+        </ul>
+    </script>
+    <script data-template-name="test-list-item" type="text/template">
+        <li data-bind="@text: $."></li>
+    </script>
+</head>
+<body>
+<div id="test">
+    <ul>
+        <li><a href="">Click Me</a></li>
+        <li><a href="">Click Me 2</a></li>
+        <li><a href="">Click Me 3</a></li>
+    </ul>
+</div>
+
+<div id="main"></div>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+# -*- coffee -*- -p
+author: 'YC <yinso.chen@gmail.com>'
+name: 'covalent'
+description: 'A two-way data-binding template system'
+version: '0.1.0'
+private: true
+repository:
+  type: 'git'
+  url: 'git://bitbucket.org/yinso/bookish.git'
+engines:
+  node: '~ 0.8.4'
+scripts:
+  test: 'make test'
+  prepublish: 'make'
+dependencies:
+  'coffee-script': '=1.4.0'
+  amdify: 'git+ssh://git@bitbucket.org:yinso/amdify.git#master'
+devDependencies:
+  jquery: '=1.8.3'
+  jsdom: '=0.8.6'
+  chai: '= 1.4.0'
+  mocha: '= 1.7.3'
+  supervisor: '= 0.5.0'
+  supertest: '=0.5.1'
+  libxmljs: '=0.6.1'
+  'coffee-bean': '=0.1.0'
+  pegjs: '=0.7.0'
+
+
+  
