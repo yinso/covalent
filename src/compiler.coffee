@@ -77,7 +77,7 @@ deepEqual = (o1, o2) ->
   return arg4
 
   A-Normal Form is a good intermediary representation between a syntax-tree to a CPS-equivalent. What it basically
-  does is to flatten out the syntax tree into a syntax list. A-Normal Form similar  to
+  does is to flatten out the syntax tree into a syntax "stack". A-Normal Form similar  to
   SSA (Single-State Assignment)
 
   We mark the statements where we are generating a new binding with let: <arg> so the CPS function knows we
@@ -108,7 +108,7 @@ expToANF = (exp) ->
         anfExp arg, stack
     err = gensym("err")
     res = gensym("res")
-    stack.push {let: res, err: err, funcall: func, args: args}
+    stack.push {let: res, err: err, funcall: func, args: resArgs}
     res
 
   anfIf = (exp, stack) ->
@@ -127,6 +127,13 @@ expToANF = (exp) ->
       anfExp(block[i], stack)
     anfExp(block[block.length - 1], stack)
 
+  anfObject = ({object}, stack) ->
+    newKeyVals =
+      for [key, val] in object
+        res = anfExp val, stack
+        [key, res]
+    {object: newKeyVals}
+
   anfExp = (exp, stack = []) ->
     if not (exp instanceof Object)
       exp
@@ -138,6 +145,8 @@ expToANF = (exp) ->
       anfIf exp, stack
     else if exp.funcall
       anfFuncall exp, stack
+    else if exp.object
+      anfObject exp, stack
     else
       exp
 
@@ -153,9 +162,9 @@ expToANF = (exp) ->
 
   Convert from A-Normal Form to CPS
 
-  This takes a syntax list and convert it back into another syntax tree at the same time adding in the continuations.
+  This takes a syntax stack and convert it back into another syntax tree at the same time adding in the continuations.
 
-  The approach is to walk the list backwards, and then take the previous expression and the current expression to
+  The approach is to unwind the stack, and then take the previous expression and the current expression to
   determine how to glue them together
 
   1) if the previous expression is a marked ANF expression, there are currently two possibilities.
@@ -343,7 +352,9 @@ class Compiler
         newEnv[key] = val
     newEnv
   compileExp: (exp, depends = {}) ->
-    compiled = @cpsToSource(@anfToCPS(@expToANF(exp)), depends)
+    anf = @expToANF(exp)
+    cps = @anfToCPS(anf)
+    compiled = @cpsToSource(cps, depends)
     new Function ['cb'], """
         var self = this;
         #{compiled}
@@ -437,14 +448,14 @@ class Compiler
       throw new Error("Compiler.compile:unknown_id: #{id}")
   genCell: ({cell}, env, buffer, depends, isLast) ->
     depends[cell] = cell
-    buffer.write "context.get(\"#{cell}\")"
+    buffer.write "self.context.get(\"#{cell}\")"
   genCellSet: ({cellSet, exp}, env, buffer, depends, isLast) ->
-    buffer.write "context.set(\"#{cellSet}\", "
+    buffer.write "self.context.set(\"#{cellSet}\", "
     @gen exp, env, buffer, depends
     buffer.write ")"
   genCellAlias: ({cellAlias, exp}, env, buffer, depends, isLast) ->
     depends[exp] = exp
-    buffer.write "context.setAlias(\"#{cellAlias}\", \"#{exp}\")"
+    buffer.write "self.context.setAlias(\"#{cellAlias}\", \"#{exp}\")"
   genIf: (exp, env, buffer, depends, isLast) ->
     if not exp.cps
       buffer.writeLine "(function() {"

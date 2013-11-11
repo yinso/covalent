@@ -512,7 +512,7 @@ module.exports = (function(){
                 if (result0 === null) {
                   pos0 = pos;
                   pos1 = pos;
-                  result0 = parse_FuncallExpression();
+                  result0 = parse_AssignmentExpression();
                   if (result0 !== null) {
                     result1 = parse__();
                     if (result1 !== null) {
@@ -534,7 +534,7 @@ module.exports = (function(){
                   if (result0 === null) {
                     pos0 = pos;
                     pos1 = pos;
-                    result0 = parse_AssignmentExpression();
+                    result0 = parse_OrExpression();
                     if (result0 !== null) {
                       result1 = parse__();
                       if (result1 !== null) {
@@ -556,7 +556,7 @@ module.exports = (function(){
                     if (result0 === null) {
                       pos0 = pos;
                       pos1 = pos;
-                      result0 = parse_OrExpression();
+                      result0 = parse_FuncallExpression();
                       if (result0 !== null) {
                         result1 = parse__();
                         if (result1 !== null) {
@@ -2265,7 +2265,7 @@ module.exports = (function(){
       }
       
       function parse_FuncallExpression() {
-        var result0, result1, result2, result3, result4, result5, result6, result7, result8, result9;
+        var result0, result1, result2, result3, result4, result5, result6, result7;
         var pos0, pos1;
         
         pos0 = pos;
@@ -2298,28 +2298,7 @@ module.exports = (function(){
                 if (result4 !== null) {
                   result5 = parse__();
                   if (result5 !== null) {
-                    if (input.charCodeAt(pos) === 59) {
-                      result6 = ";";
-                      pos++;
-                    } else {
-                      result6 = null;
-                      if (reportFailures === 0) {
-                        matchFailed("\";\"");
-                      }
-                    }
-                    result6 = result6 !== null ? result6 : "";
-                    if (result6 !== null) {
-                      result7 = parse__();
-                      if (result7 !== null) {
-                        result0 = [result0, result1, result2, result3, result4, result5, result6, result7];
-                      } else {
-                        result0 = null;
-                        pos = pos1;
-                      }
-                    } else {
-                      result0 = null;
-                      pos = pos1;
-                    }
+                    result0 = [result0, result1, result2, result3, result4, result5];
                   } else {
                     result0 = null;
                     pos = pos1;
@@ -2385,28 +2364,7 @@ module.exports = (function(){
                       if (result6 !== null) {
                         result7 = parse__();
                         if (result7 !== null) {
-                          if (input.charCodeAt(pos) === 59) {
-                            result8 = ";";
-                            pos++;
-                          } else {
-                            result8 = null;
-                            if (reportFailures === 0) {
-                              matchFailed("\";\"");
-                            }
-                          }
-                          result8 = result8 !== null ? result8 : "";
-                          if (result8 !== null) {
-                            result9 = parse__();
-                            if (result9 !== null) {
-                              result0 = [result0, result1, result2, result3, result4, result5, result6, result7, result8, result9];
-                            } else {
-                              result0 = null;
-                              pos = pos1;
-                            }
-                          } else {
-                            result0 = null;
-                            pos = pos1;
-                          }
+                          result0 = [result0, result1, result2, result3, result4, result5, result6, result7];
                         } else {
                           result0 = null;
                           pos = pos1;

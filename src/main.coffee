@@ -227,6 +227,7 @@ test '1 + foo(2) + bar(3, 4)'
 test 'if 1 == 3 { foo() } else { bar() }'
 test '1 + (if 1 == 1 { foo(1) } else { bar(2) })'
 test '1 + (if 1 == 0 { foo(1) baz(2) } else { bar(2) })'
+test 'baz({foo: 1, bar: 1 + bar() })'
 
 $  ->
   window.proxy = null

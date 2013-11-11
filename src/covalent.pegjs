@@ -160,9 +160,9 @@ Expression
   / exp:IfExpression _ { return exp; }
   / exp:TryCatchExpression _ { return exp; }
   / exp:ThrowExpression _ { return exp; }
-  / exp:FuncallExpression _ { return exp; }
   / exp:AssignmentExpression _ { return exp; }
   / exp:OrExpression _ { return exp; }
+  / exp:FuncallExpression _ { return exp; }
 
 NotExpression
   = '!' _ exp:Expression _ { return { op: '!', lhs: exp }; }
@@ -279,8 +279,8 @@ _tailFunctionParamExp
   = ',' _ param:_functionParamExp _ { return param; }
 
 FuncallExpression
-  = id:Identifier _ '(' _ ')' _ ';'? _ { return { funcall: {id: id}, args: []}; }
-  / id:Identifier _ '(' _ args:_funcallParamsExp _ ')' _ ';'? _ {
+  = id:Identifier _ '(' _ ')' _  { return { funcall: {id: id}, args: []}; }
+  / id:Identifier _ '(' _ args:_funcallParamsExp _ ')' _  {
     return { funcall: {id: id}, args: args }; 
   }
 
