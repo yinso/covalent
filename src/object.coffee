@@ -81,7 +81,7 @@ class ProxyMap
           right[k] = val[k]
     [ left , right ]
   _callSet: (evt) =>
-    console.log 'ObjectProxy.set', evt
+    #console.log 'ObjectProxy.set', evt
     proxy = @hasProxy(evt.path) # without this it means no binding.
     if proxy
       @_recurseSet proxy, evt
@@ -99,7 +99,7 @@ class ProxyMap
       @_recurseDeleteInner proxy, {type: 'delete', path: path, oldVal: oldVal}
     else # neither is an object - we will do nothing.
       null
-    console.log 'ObjectProxy.recurseSet', evt
+    #console.log 'ObjectProxy.recurseSet', evt
     proxy.emit 'set', evt
   _recurseSetInner: (proxy, evt) ->
     {path, oldVal, newVal} = evt
@@ -110,13 +110,13 @@ class ProxyMap
         if innerProxy
           @_recurseSet innerProxy, {type: 'set', path: innerPath, oldVal: oldVal[key], newVal: val}
   _callDelete: (evt) =>
-    console.log 'ObjectProxy.delete', evt
+    #console.log 'ObjectProxy.delete', evt
     proxy = @hasProxy(evt.path)
     if proxy
       @_recurseDelete proxy, evt
   _recurseDelete: (proxy, evt) ->
     @_recurseDeleteInner proxy, evt
-    console.log 'ObjectProxy.recurseDelete', evt
+    #console.log 'ObjectProxy.recurseDelete', evt
     proxy.emit 'delete', evt
   _recurseDeleteInner: (proxy, evt) ->
     {path, oldVal} = evt
@@ -129,12 +129,12 @@ class ProxyMap
           if inner
             @_recurseDelete inner, {type: 'delete', path: innerPath, oldVal: val}
   _callSplice: (evt) =>
-    console.log 'ObjectProxy.splice', evt
+    #console.log 'ObjectProxy.splice', evt
     proxy = @hasProxy(evt.path)
     if proxy
       proxy.emit 'splice', evt
   _callMove: (evt) =>
-    console.log 'ObjectProxy.move', evt
+    #console.log 'ObjectProxy.move', evt
     proxy = @hasProxy(evt.path) # this is the original evt.
     if proxy
       # get the new proxy => this would now be required.

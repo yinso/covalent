@@ -75,7 +75,7 @@ class Request
       success: @successHandler cb
 
 testData =
-  account:
+  accountHome:
     id: 'e1d4f651-024e-4067-addf-719104924f91'
     name: 'test'
     ownerID: 'e1d4f651-024e-4067-addf-719104924f91'
@@ -122,6 +122,60 @@ testData =
       }
     ]
 
+# to transform code from sync to async - the approach is
+# to basically make the continuation explicit.
+#
+# the basic approach is this - lift out the arguments, and place them higher on the stack.
+# foo() + bar()
+# => {op: '+', lhs: {funcall: {id: 'foo'}, args: []}, rhs: {funcall: {id: 'bar'}, args: []}}
+# =>
+# [
+#   {arg1: {funcall: {id: 'foo'}, args: []}}
+#   {arg2: {funcall: {id: 'bar'}, args: []}}
+#   {op: '+', lhs: 'arg1', rhs: 'arg2'}
+# ]
+# =>
+# {funcall: {id: 'foo'}, args: [
+#   {function: '', args: ['err1', 'arg1'], body: [
+#     {funcall: {id: 'bar'}, args: [
+#       {function: '', args: ['err2', 'arg2'], body: [
+#          {op: '+', lhs: 'arg1', rhs: 'arg2'}]}]}]}]}
+#
+# it's in a way a 2 stage transformation -> first to lift the args, and then second to fill in the chains.
+# {
+# 1 + 1
+# 2
+# }
+# block [ { 1 + 1} { 2 } ] => we still should retain its *blockness*.
+# x = foo()
+# y = bar()
+# z = x + y + baz()
+#
+# because everything can be an expression so we should end up assigning the result
+# to a variable.
+# 1 + (if foo() { bar() } else { baz() }
+#
+#
+# should translate to
+# foo (err, res) ->
+#  if err then return cb err
+#  if res
+#    bar (err2, res2) ->
+#     if err2 then cb err2
+#     cb null, 1 + res2
+#  else
+#    baz (err3, res3) ->
+#      if err3 then cb err3
+#      cb null, 1 + res3
+#
+# once a while though this would translate into something that won't have a continuation...
+# we'll need to think through how that works.
+# OK - we'll probably need to rewrite the way the code is written??
+# currently - we try to pop in what's earlier, but when it comes to if (where things got split in 2)
+# we got in trouble. i.e. it should be branched into two parts...
+# we can argue that we'll put the rest of the code into a single section so it'll be called from both.
+# (but this is strictly speaking not necessary).
+
 
 mockLoggedIn = (url, cb) ->
   cb null, testData
@@ -148,8 +202,33 @@ class Account extends ObjectProxy
 
 
 
+window.runtime = runtime = new Runtime($)
+
+test = (stmt) ->
+  exp = runtime.parse(stmt)
+  anfRes = runtime.compiler.expToANF(exp)
+  cpsExp = runtime.compiler.anfToCPS anfRes
+  source = runtime.compiler.cpsToSource cpsExp
+  func = runtime.compiler.compileExp exp
+  console.log '*********************** TEST'
+  console.log '   STMT', stmt
+  console.log '    EXP', JSON.stringify(exp, null, 2)
+  console.log '    ANF', JSON.stringify(anfRes, null, 2)
+  console.log '    CPS', JSON.stringify(cpsExp, null, 2)
+  #console.log 'COMPILE', source
+  console.log 'COMPILE', func
+
+test '1'
+test '1 + 1'
+test '1 * (2 + 1)'
+test 'foo()'
+test '1 + foo()'
+test '1 + foo(2) + bar(3, 4)'
+test 'if 1 == 3 { foo() } else { bar() }'
+test '1 + (if 1 == 1 { foo(1) } else { bar(2) })'
+test '1 + (if 1 == 0 { foo(1) baz(2) } else { bar(2) })'
+
 $  ->
-  window.runtime = runtime = new Runtime($)
   window.proxy = null
 
   mockLoggedIn '/user/login', (err, res) ->
@@ -169,4 +248,13 @@ $  ->
       runtime.loadTemplates()
       runtime.renderView 'test', '#test'
       runtime.renderView 'test-list', '#test'
+      milliSecond = () ->
+        d = new Date()
+        runtime.context.set 'currentMilliSecond', "#{d.toString()}.#{d.getMilliseconds()}"
+      setInterval milliSecond, 100
+      $(document).bind 'mousemove', (evt) ->
+          runtime.context.set 'mousePos', {left: evt.pageX, top: evt.pageY}
+      # how would we be able to do something similar to flapjax example?
+      # timerB(100) => this is something that'll generate event by itself!
+
 

@@ -8,6 +8,9 @@
         <div>
             <div data-bind="@text $accountHome.id"></div>
             <input data-bind="@attr { value: $accountHome.name } @on { keyup: $accountHome.name = this.value }" />
+            <div data-bind="@text $currentMilliSecond"></div>
+            <div data-bind="@text $mousePos"></div>
+            <!-- <div data-bind="@text delay(500, $mousePos)"></div> -->
         </div>
     </script>
     <script data-template-name="test-list" type="text/template">

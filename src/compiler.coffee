@@ -40,6 +40,229 @@ EachBinding = require './each'
 ###
 
 
+deepEqual = (o1, o2) ->
+  left = (o1, o2) ->
+    for key, val of o1
+      if not o2.hasOwnProperty(key)
+        return false
+    true
+  both = (o1, o2) ->
+    for key, val of o1
+      if not deepEqual(o1[key], o2[key])
+        return false
+    true
+  if o1 == o2 # the same object.
+    true
+  else if o1 instanceof Object and o2 instanceof Object
+    left(o1, o2) and left(o2, o1) and both(o1, o2)
+  else
+    false
+
+###
+
+  Converting EXP to ANF (A-Normal Form)
+
+  A-Normal Form, in a nutshell, names the implicit parameters, and sequence the expression in evaluation order.
+
+  For example. Let's say that we have the following.
+
+  1 + foo(abc, bar() + 1))
+
+  Its A-Normal Form would be
+
+  arg1 = bar()
+  arg2 = arg1 + 1
+  arg3 = foo(abc, arg2)
+  arg4 = 1 + arg3
+  return arg4
+
+  A-Normal Form is a good intermediary representation between a syntax-tree to a CPS-equivalent. What it basically
+  does is to flatten out the syntax tree into a syntax list. A-Normal Form similar  to
+  SSA (Single-State Assignment)
+
+  We mark the statements where we are generating a new binding with let: <arg> so the CPS function knows we
+  explicitly mark it.
+
+  NOTE - An `if` statement has two branches, and both will generate different results. In our implementation we
+  do not deal with having two subsequent branches for the ANF. Instead, such branching is done during the CPS step.
+
+###
+expToANF = (exp) ->
+
+  symTable = {}
+
+  gensym = (sym = "arg") ->
+    if not symTable.hasOwnProperty(sym)
+      symTable[sym] = 1
+    {id: "#{sym}#{symTable[sym]++}"}
+
+  anfOp = ({op, lhs, rhs}, stack) ->
+    lhsRes = anfExp(lhs, stack)
+    rhsRes = anfExp(rhs, stack)
+    {op: op, lhs: lhsRes, rhs: rhsRes}
+
+  anfFuncall = ({funcall, args}, stack) ->
+    func = anfExp funcall, stack
+    resArgs =
+      for arg in args
+        anfExp arg, stack
+    err = gensym("err")
+    res = gensym("res")
+    stack.push {let: res, err: err, funcall: func, args: args}
+    res
+
+  anfIf = (exp, stack) ->
+    resExp = {if: anfExp(exp.if, stack), then: anfInner(exp.then), else: anfInner(exp.else)}
+    # how do we do object equal?
+    if deepEqual(exp, resExp)
+      exp
+    else
+      err = gensym("err")
+      res = gensym("res")
+      stack.push {let: res, if: resExp.if, then: resExp.then, else: resExp.else, err: err}
+      res
+
+  anfBlock = ({block}, stack) ->
+    for i in [0...block.length - 1]
+      anfExp(block[i], stack)
+    anfExp(block[block.length - 1], stack)
+
+  anfExp = (exp, stack = []) ->
+    if not (exp instanceof Object)
+      exp
+    else if exp.block
+      anfBlock exp, stack
+    else if exp.op # operator...
+      anfOp exp, stack
+    else if exp.if
+      anfIf exp, stack
+    else if exp.funcall
+      anfFuncall exp, stack
+    else
+      exp
+
+  anfInner = (exp) ->
+    stack = []
+    last = anfExp exp, stack
+    stack.push last
+    stack
+
+  anfInner exp
+
+###
+
+  Convert from A-Normal Form to CPS
+
+  This takes a syntax list and convert it back into another syntax tree at the same time adding in the continuations.
+
+  The approach is to walk the list backwards, and then take the previous expression and the current expression to
+  determine how to glue them together
+
+  1) if the previous expression is a marked ANF expression, there are currently two possibilities.
+
+    The previous exp is a funcall - in this case, we just create a continuation (i.e. callback) to wrap the current exp.
+
+    The previous exp is an if statement - in this case, we'll have to wrap the current exp with continuation within
+    both the then branch and the else branch of the if statement.
+
+  2) if the previous expression isn't a marked ANF expression, then we'll prepend it to the current expression to
+     create a block
+
+###
+anfToCPS = (stack) ->
+
+  swapCpsID = (exp, from, to) ->
+    if not (exp instanceof Object)
+      exp
+    else if exp.id
+      if exp.id == from.id
+        to
+      else
+        exp
+    else if exp.op
+      {op: exp.op, lhs: swapCpsID(exp.lhs, from, to), rhs: swapCpsID(exp.rhs, from, to)}
+    else if exp.funcall
+      {funcall: swapCpsID(exp.funcall, from, to), args: (swapCpsID(arg, from, to) for arg in exp.args)}
+    else if exp.block
+      {block: (swapCpsID(exp, from, to) for exp in exp.block)}
+    else if exp.if
+      {if: swapCpsID(exp.if, from, to), then: swapCpsID(exp.then, from, to), else: swapCpsID(exp.else, from, to)}
+    else
+      throw new Error("swapCpsID:unknown_exp: #{JSON.stringify(exp, null, 2)}")
+
+  lastResFromBlock = (stack) ->
+    # we'll walk backwards...
+    for i in [stack.length - 1..0] by -1
+      exp = stack[i]
+      if exp.let
+        return exp.let
+
+  stackAddContinuation = (stack, cont, res) ->
+    newStack = [].concat stack
+    lastExp = newStack[newStack.length - 1]
+    if lastExp?.id == res.id
+      newStack.pop()
+    newStack.push cont
+    newStack
+
+  blockAddContinuationThenCPS = (stack, cont, letRes) ->
+    stackLet = lastResFromBlock(stack)
+    newContinuation = swapCpsID cont, letRes, stackLet
+    newStack = stackAddContinuation stack, newContinuation, stackLet
+    anfToCPS newStack
+
+  cpsInner = (stack, i, resExp) ->
+    if i < 0
+      return resExp
+    exp = stack[i]
+    if not (exp instanceof Object)
+      if resExp.block
+        resExp.block.unshift exp
+      else
+        resExp = {block: [exp, resExp]}
+      cpsInner stack, i - 1, resExp
+    else if exp.let
+      err = exp.err
+      if exp.funcall
+        # we'll need to handle the callback...
+        if resExp?.id == exp.let.id # this is the simplified version.
+          cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([{id: 'cb'}])}
+        else
+          callback =
+            function: ''
+            args: [exp.err.id, exp.let.id]
+            body: [
+              {
+                if: err
+                then: {funcall: {id: 'cb'}, args: [err]}
+                else: if resExp.funcall then resExp else {funcall: {id: 'cb'}, args: [null, resExp]}
+                cps: true
+              }
+            ]
+          cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([callback])}
+      else if exp.if
+        thenExp = blockAddContinuationThenCPS exp.then, resExp, exp.let
+        elseExp = blockAddContinuationThenCPS exp.else, resExp, exp.let
+        cpsInner stack, i - 1, {if: exp.if, then: thenExp, else: elseExp, cps: true}
+      else
+        throw new Error("unknown_anf_let_form: #{JSON.stringify(exp, null, 2)}")
+    else # we should convert the res into a block if it isn't one.
+      if resExp.block
+        resExp.block.unshift exp
+      else
+        resExp = {block: [ exp, resExp ]}
+      cpsInner stack, i - 1, resExp
+
+  cps = (stack) ->
+    cpsInner stack, stack.length - 2, stack[stack.length - 1]
+
+  res = cps stack
+  if not (res instanceof Object)
+    {funcall: {id: 'cb'}, args: [null, res]}
+  else if res.op or res.block
+    {funcall: {id: 'cb'}, args: [null, res]}
+  else
+    res
 
 class LineBuffer
   constructor: (@level = 0) ->
@@ -72,7 +295,6 @@ class LineBuffer
     (@toLine(line) for line in @lines).join("\n")
   toLine: ([level, line]) ->
     (@tab for i in [0...level]).join('') + line
-
 
 # basic compiler works now... it's time to see how it can be integrated.
 # NOTE - we still have the whole binding thing to work out as well...
@@ -114,93 +336,143 @@ class Compiler
       bindingExp = BindingFactory.make(at, prop, depends, callback, @runtime)
       bindingList.push bindingExp
     # the AtRule signifies what to compile - time to create a registry.
+  newEnvironment: (current, prev) ->
+    newEnv = Object.create prev
+    for key, val of current
+      if current.hasOwnProperty(key)
+        newEnv[key] = val
+    newEnv
   compileExp: (exp, depends = {}) ->
-    compiled = @generate(exp, 3, depends)
-    new Function ['context', 'event', 'cb'], """try {
-        var res = #{compiled};
-        return cb(null, event, res);
-      } catch (e) {
-        return cb(e, event, runtime);
-      }
+    compiled = @cpsToSource(@anfToCPS(@expToANF(exp)), depends)
+    new Function ['cb'], """
+        var self = this;
+        #{compiled}
     """
-  generate: (exp, level = 0, depends) ->
+  expToANF: expToANF
+  anfToCPS: anfToCPS
+  cpsToSource: (exp, depends = {}) ->
+    newEnv = @newEnvironment {cb: {id: 'cb'}}, @runtime.env
+    @generate exp, newEnv, 3, {}
+  generate: (exp, env, level, depends, isLast = false) ->
     buffer = new LineBuffer(level) # here's the thing... are we going to write this in a way that'll
-    @gen exp, buffer, depends
+    @gen exp, env, buffer, depends, isLast
     buffer.toString()
-  gen: (exp, buffer, depends) ->
+  gen: (exp, env, buffer, depends, isLast) ->
     # let's generate
     if not (exp instanceof Object)
       buffer.append exp
     else if exp.op
-      @genOp exp, buffer, depends
+      @genOp exp, env, buffer, depends, isLast
     else if exp.funcall
-      @genFuncall exp, buffer, depends
+      @genFuncall exp, env, buffer, depends, isLast
     else if exp.id
-      @genID exp, buffer, depends
+      @genID exp, env, buffer, depends, isLast
     else if exp.cell
-      @genCell exp, buffer, depends
+      @genCell exp, env, buffer, depends, isLast
     else if exp.cellSet
-      @genCellSet exp, buffer, depends
+      @genCellSet exp, env, buffer, depends, isLast
     else if exp.cellAlias
-      @genCellAlias exp, buffer, depends
+      @genCellAlias exp, env, buffer, depends, isLast
     else if exp.if
-      @genIf exp, buffer, depends
+      @genIf exp, env, buffer, depends, isLast
     else if exp.element
-      @genElement exp, buffer, depends
+      @genElement exp, env, buffer, depends, isLast
     else if exp.object
-      @genObject exp, buffer, depends
-  genOp: ({op, lhs, rhs}, buffer, depends) ->
+      @genObject exp, env, buffer, depends, isLast
+    else if exp.hasOwnProperty('function')
+      @genFunction exp, env, buffer, depends, isLast
+    else
+      throw new Error("Compiler.generate:unsupported_exp: #{JSON.stringify(exp)}")
+  genOp: ({op, lhs, rhs}, env, buffer, depends, isLast) ->
     if (op == '!')
       buffer.write '!'
-      @gen lhs, buffer, depends
+      @gen lhs, env, buffer, depends, false
     else
-      @gen lhs, buffer, depends
+      @gen lhs, env, buffer, depends, false
       buffer.write " #{op} "
-      @gen rhs, buffer, depends
-  genFuncall: ({funcall, args}, buffer, depends) ->
-    @gen funcall, buffer, depends
-    buffer.write "("
+      @gen rhs, env, buffer, depends, false
+  genFuncall: ({funcall, args}, env, buffer, depends, isLast) ->
+    @gen funcall, env, buffer, depends, false
+    buffer.write ".call(self, "
     for arg, i in args
-      @gen arg, buffer, depends
+      @gen arg, env, buffer, depends, false
       if i != args.length - 1
         buffer.write ", "
     buffer.write ")"
-  genID: ({id}, buffer, depends) ->
-    buffer.write id
-  genCell: ({cell}, buffer, depends) ->
+  genFunction: (exp, env, buffer, depends, isLast) ->
+    {args, body} = exp
+    newArgs = {}
+    for arg in args
+      newArgs[arg] = {id: arg}
+    newEnv = @newEnvironment newArgs, env
+    buffer.write "function #{exp.function}("
+    buffer.write args.join(", ")
+    buffer.write ") {"
+    buffer.newLine()
+    buffer.indent()
+    for i in [0...body.length - 1]
+      @gen body[i], newEnv, buffer, depends, false
+      buffer.write ";"
+      buffer.newLine()
+    lastExp = body[body.length - 1]
+    if lastExp.if
+      @gen lastExp, newEnv, buffer, depends, true
+    else
+      buffer.write "return "
+      @gen lastExp, newEnv, buffer, depends, false
+      buffer.write ";"
+    buffer.newLine()
+    buffer.dedent()
+    buffer.write "}"
+  genID: ({id}, env, buffer, depends, isLast) ->
+    #if not @runtime.env.hasOwnProperty(id)
+    #  throw new Error("Compiler.compile:unknown_id: #{id}")
+    if env[id]
+      buffer.write id
+    else if @runtime.env.hasOwnProperty(id)
+      buffer.write "this.runtime.env['"
+      buffer.write id
+      buffer.write "']"
+    else
+      throw new Error("Compiler.compile:unknown_id: #{id}")
+  genCell: ({cell}, env, buffer, depends, isLast) ->
     depends[cell] = cell
     buffer.write "context.get(\"#{cell}\")"
-  genCellSet: ({cellSet, exp}, buffer, depends) ->
+  genCellSet: ({cellSet, exp}, env, buffer, depends, isLast) ->
     buffer.write "context.set(\"#{cellSet}\", "
-    @gen exp, buffer, depends
+    @gen exp, env, buffer, depends
     buffer.write ")"
-  genCellAlias: ({cellAlias, exp}, buffer, depends) ->
+  genCellAlias: ({cellAlias, exp}, env, buffer, depends, isLast) ->
     depends[exp] = exp
     buffer.write "context.setAlias(\"#{cellAlias}\", \"#{exp}\")"
-  genIf: (exp, buffer, depends) ->
-    buffer.writeLine "(function() {"
-    buffer.indent()
+  genIf: (exp, env, buffer, depends, isLast) ->
+    if not exp.cps
+      buffer.writeLine "(function() {"
+      buffer.indent()
     buffer.write "if ("
-    @gen exp.if, buffer, depends
+    @gen exp.if, env, buffer, depends, false
     buffer.writeLine ") {"
     buffer.indent()
-    buffer.write "return "
-    @gen exp.then, buffer, depends
+    if (not exp.cps) or isLast
+      buffer.write "return "
+    @gen exp.then, env, buffer, depends, false
     buffer.newLine()
     buffer.dedent()
     buffer.writeLine "} else {"
     buffer.indent()
-    buffer.write "return "
-    @gen exp.else, buffer, depends
+    if not (exp.cps) or isLast
+      buffer.write "return "
+    @gen exp.else, env, buffer, depends, false
     buffer.newLine()
     buffer.dedent()
     buffer.writeLine "}"
-    buffer.dedent()
-    buffer.writeLine "}).call(this)"
-  genElement: ({element, prop}, buffer, depends) ->
+    if not exp.cps
+      buffer.dedent()
+      buffer.writeLine "}).call(this)"
+  genElement: ({element, prop}, env, buffer, depends, isLast) ->
     # this is appearing on RHS (i.e. getting the values)
-    buffer.write("this.runtime.$(")
-    buffer.write "this.element"
+    buffer.write("self.runtime.$(")
+    buffer.write "self.element"
     buffer.write ")"
     buffer.write switch prop
       when "value" then ".val()"
@@ -216,7 +488,7 @@ class Compiler
       when "offset" then ".offset()"
       else throw new Error("Compiler.compile:unknown_element_property: #{prop}")
 
-  genObject: ({object}, buffer, depends) ->
+  genObject: ({object}, env, buffer, depends, isLast) ->
     buffer.writeLine("{")
     buffer.indent()
     for [ key, exp ], i in object
@@ -224,7 +496,7 @@ class Compiler
         buffer.write ", "
       buffer.write "#{key}: "
       #buffer.indent()
-      @gen exp, buffer, depends
+      @gen exp, env, buffer, depends
       buffer.newLine()
       #buffer.dedent()
     buffer.dedent()

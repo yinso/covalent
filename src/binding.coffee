@@ -82,7 +82,7 @@ class TextBinding # value from Proxy to UI
     proxy.removeListener 'move', @onMove
     delete @proxies[proxy.prefix]
   onRefresh: (evt) =>
-    console.log "#{@constructor.name}.onRefresh", evt, @refresh
+    #console.log "#{@constructor.name}.onRefresh", evt, @refresh
     @callback.call @, @context, evt, @refresh
   onMove: ({path, toPath, toProxy}) =>
     console.log 'TextBinding.onMove', path, toPath
@@ -98,7 +98,7 @@ BindingFactory.register('text', TextBinding)
 
 class AttrBinding extends TextBinding
   refresh: (err, evt, res) =>
-    console.log "AttrBinding.refresh", err, evt, res
+    #console.log "AttrBinding.refresh", err, evt, res
     if not err
       runtime.$(@element).attr @prop, res
 
