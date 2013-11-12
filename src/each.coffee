@@ -1,9 +1,17 @@
+###
 
-# each template is never created manually - it's always created through
-# the @each binding. So in effect this is a private class.
-# this is really a binding... hmm...
-class EachTemplate
-  constructor: (@contextPath, @templateName, @runtime) -> # is this enough?
+  Each - UI binding for array values.
+
+  Each maps to the @each clause in covalent. As the array varies, the UI element it binds against will gain
+  corresponding UI element.
+
+  EachUIViewFactory is a compile-time object like BindingFactory - this is created during the Template loading.
+
+
+###
+
+class EachUIViewFactory
+  constructor: (@contextPath, @templateName, @runtime) ->
   destroy: () ->
     delete @runtime
   make: (context, element) ->
@@ -11,12 +19,12 @@ class EachTemplate
       @template = @runtime.factory.get(@templateName)
     new EachUIView context.getProxy(@contextPath), element, @contextPath, @template, @runtime
 
-# each UI view is also
+# EachUIView is actually a binding.
 class EachUIView
   constructor: (@context, @element, @prop, @template, @runtime) ->
     @children = []
     @bindProxy @context
-    @refresh {}
+    #@refresh {}
   rebind: (context) ->
     @unbindProxy context
     @bindProxy context
@@ -62,7 +70,7 @@ class EachUIView
       for i in [(index + removedLength - 1)...(index + insertedLength - 1)] by -1
         # remove backwards so we won't cause index destabilization
         @removeItem i
-  refresh: () ->
+  refresh: (evt) ->
     # let's get the value...
     values = @context.get('.')
     if not (values instanceof Array)
@@ -90,6 +98,7 @@ class EachUIView
         throw new Error("EachUIView.gap_in_children: #{i}")
       template.appendAfter prev
       @children.splice i, 0, template
+    template.refresh {}
   removeItem: (i) ->
     console.log 'EachUIView.removeItem', i
     template = @children[i]
@@ -101,4 +110,4 @@ class EachUIView
 
 #BindingFactory.register 'each', EachUIView
 
-module.exports = EachTemplate
+module.exports = EachUIViewFactory

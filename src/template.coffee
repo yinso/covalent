@@ -68,6 +68,9 @@ class UIView
       for bindingFactory in @template.bindingFactories[i]
         @bindings.push bindingFactory.make @context, boundElements[i]
     view
+  refresh: (evt = {}) ->
+    for binding in @bindings
+      binding.refresh evt
   prependTo: (@element) ->
     @$(@element).prepend @inner
   appendTo: (@element) ->

@@ -62,6 +62,7 @@ class Runtime
     view = @factory.makeView tplName, element, context
     view.appendTo element
     @templates[tplName] = view # let's ensure that this is
+    view.refresh {}
 
 
 

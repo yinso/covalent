@@ -38,8 +38,8 @@ class EventBinding
     @runtime.$(@element).unbind @prop, @refresh
   refresh: (evt) ->
     console.log "#{@constructor.name}.refresh", evt
-    @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @afterRefresh
-  afterRefresh: (err, res) =>
+    @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @uponRefresh
+  uponRefresh: (err, res) =>
 
 BindingFactory.register 'on', EventBinding
 
@@ -55,7 +55,7 @@ class TextBinding # value from Proxy to UI
   constructor: (@context, @element, @prop, @depends, @runtime, @callback) ->
     @proxies = {}
     @bindProxies @context
-    @onRefresh {}
+    #@refresh {}
   destroy: () ->
     delete @context
     @unbindProxies()
@@ -63,7 +63,7 @@ class TextBinding # value from Proxy to UI
     delete @element
   rebind: (context) ->
     @bindProxies context
-    @onRefresh {}
+    @refresh {}
   bindProxies: (@context) ->
     @unbindProxies()
     for key, val of @depends
@@ -72,32 +72,32 @@ class TextBinding # value from Proxy to UI
     for key, proxy of @proxies
       @unbindProxy proxy
   bindProxy: (proxy) ->
-    proxy.on 'set', @onRefresh
-    proxy.on 'delete', @onRefresh
+    proxy.on 'set', @refresh
+    proxy.on 'delete', @refresh
     proxy.on 'move', @onMove
     @proxies[proxy.prefix] = proxy
   unbindProxy: (proxy) ->
-    proxy.removeListener 'set', @onRefresh
-    proxy.removeListener 'delete', @onRefresh
+    proxy.removeListener 'set', @refresh
+    proxy.removeListener 'delete', @refresh
     proxy.removeListener 'move', @onMove
     delete @proxies[proxy.prefix]
-  onRefresh: (evt) =>
+  refresh: (evt) =>
     #console.log "#{@constructor.name}.onRefresh", evt, @refresh
-    @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @refresh
+    @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @uponRefresh
   onMove: ({path, toPath, toProxy}) =>
     console.log 'TextBinding.onMove', path, toPath
     # how do I ensure this can be called twice without issues?
     if @proxies[path] # this is the easiest way, although a bit lazy
       @unbindProxy @proxies[path]
       @bindProxy toProxy
-  refresh: (err, res) =>
+  uponRefresh: (err, res) =>
     if not err
       @runtime.$(@element).html if res instanceof Object then JSON.stringify(res) else res
 
 BindingFactory.register('text', TextBinding)
 
 class AttrBinding extends TextBinding
-  refresh: (err, res) =>
+  uponRefresh: (err, res) =>
     #console.log "AttrBinding.refresh", err, evt, res
     if not err
       @runtime.$(@element).attr @prop, res
@@ -105,7 +105,7 @@ class AttrBinding extends TextBinding
 BindingFactory.register('attr', AttrBinding)
 
 class CssBinding extends TextBinding
-  refresh: (err, res) =>
+  uponRefresh: (err, res) =>
     if res
       @runtime.$(@element).addClass @prop
     else
