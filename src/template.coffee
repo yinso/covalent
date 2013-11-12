@@ -81,29 +81,37 @@ class UIView
     if @element
       @$(@element).detach @inner
 
-class TemplateFactory
+class TemplateManager
   constructor: (@$, @runtime) ->
-    console.log "TemplateFactory.ctor"
+    console.log "TemplateManager.ctor"
+    @templates = {}
+    @instances = {}
   destroy: () ->
     delete @$
     delete @runtime
     for key, template of @templates
       template.destroy()
   load: () ->
-    @templates = {}
     for script in @$('script[type="text/template"]').toArray()
       name = @$(script).data('template-name')
       template = Template.make(@$(script).html(), @runtime) # by default we don't have enough info to make eachTemplate.... OK.
       if @templates.hasOwnProperty(name)
-        throw new Error("TemplateFactory.duplicate_template_name: #{name}")
+        throw new Error("TemplateManager.duplicate_template_name: #{name}")
       @templates[name] = template
   get: (name) ->
     if not @templates.hasOwnProperty(name)
-      throw new Error "TemplateFactory.unknown_template: #{name}"
+      throw new Error "TemplateManager.unknown_template: #{name}"
     @templates[name]
-  makeView: (name, element, context = @runtime.context.getProxy('.')) ->
-    if not @templates.hasOwnProperty(name)
-      throw new Error "TemplateFactory.unknown_template: #{name}"
-    @templates[name].make context
+  makeView: (tplName, element, context = @runtime.context.getProxy('.')) ->
+    if not @templates.hasOwnProperty(tplName)
+      throw new Error "TemplateManager.unknown_template: #{tplName}"
+    view = @templates[tplName].make context
+    view.appendTo element
+    view
+  setView: (name, tplName, element, context = @runtime.context.getProxy('.')) ->
+    view = @makeView tplName, element, context
+    @instances[name] = view
+    view.refresh {}
+    view
 
-module.exports = TemplateFactory
+module.exports = TemplateManager

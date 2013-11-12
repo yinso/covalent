@@ -1,6 +1,7 @@
 
 Compiler = require './compiler'
-TemplateFactory = require './template'
+TemplateManager = require './template'
+WidgetFactory = require './widget'
 ObjectProxy = require './object'
 
 class Timer
@@ -48,9 +49,8 @@ builtIn.baz = (cb) ->
 class Runtime
   constructor: (@$, data = {}) -> # we take in jQuery...
     @compiler = new Compiler @
-    @factory = new TemplateFactory @$, @
+    @factory = new TemplateManager @$, @
     @context = new ObjectProxy(data)
-    @templates = {}
     @env = builtIn # this is the environment to be used for compilation!
   compile: (stmt) ->
     @compiler.compile stmt, @ # pass oneself in...
@@ -58,11 +58,10 @@ class Runtime
     @compiler.parse stmt
   loadTemplates: () ->
     @factory.load()
-  renderView: (tplName, element, context = @context.getProxy('.')) ->
-    view = @factory.makeView tplName, element, context
-    view.appendTo element
-    @templates[tplName] = view # let's ensure that this is
-    view.refresh {}
+  renderView: (name, tplName, element, context = @context.getProxy('.')) ->
+    @factory.setView name, tplName, element, context
+  registerWidget: (name, widget) ->
+    WidgetFactory.register name, widget
 
 
 

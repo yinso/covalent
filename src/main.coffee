@@ -249,15 +249,11 @@ $  ->
           ]
       # let's load a template onto
       runtime.loadTemplates()
-      runtime.renderView 'test', '#test'
-      runtime.renderView 'test-list', '#test'
+      runtime.renderView 'test', 'test', '#test'
+      runtime.renderView 'test-list', 'test-list', '#test'
       milliSecond = () ->
         d = new Date()
         runtime.context.set 'currentMilliSecond', "#{d.toString()}.#{d.getMilliseconds()}"
       setInterval milliSecond, 100
       $(document).bind 'mousemove', (evt) ->
-          runtime.context.set 'mousePos', {left: evt.pageX, top: evt.pageY}
-      # how would we be able to do something similar to flapjax example?
-      # timerB(100) => this is something that'll generate event by itself!
-
-
+        runtime.context.set 'mousePos', {left: evt.pageX, top: evt.pageY}

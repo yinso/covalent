@@ -100,17 +100,20 @@ class AttrBinding extends TextBinding
   uponRefresh: (err, res) =>
     #console.log "AttrBinding.refresh", err, evt, res
     if not err
-      @runtime.$(@element).attr @prop, res
+      if @prop == 'style'
+        @runtime.$(@element).css res
+      else
+        @runtime.$(@element).attr @prop, res
 
 BindingFactory.register('attr', AttrBinding)
 
-class CssBinding extends TextBinding
+class ClassBinding extends TextBinding
   uponRefresh: (err, res) =>
     if res
       @runtime.$(@element).addClass @prop
     else
       @runtime.$(@element).removeClass @prop
 
-BindingFactory.register 'css', CssBinding
+BindingFactory.register 'class', ClassBinding
 
 module.exports = BindingFactory

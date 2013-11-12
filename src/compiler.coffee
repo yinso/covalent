@@ -2,6 +2,7 @@
 Parser = require './covalent'
 BindingFactory = require './binding'
 EachBinding = require './each'
+WidgetFactory = require './widget'
 
 ###
 

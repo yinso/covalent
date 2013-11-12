@@ -24,6 +24,8 @@ class EachUIView
   constructor: (@context, @element, @prop, @template, @runtime) ->
     @children = []
     @bindProxy @context
+    # remove the inner children.
+    $(@element).empty()
     #@refresh {}
   rebind: (context) ->
     @unbindProxy context
