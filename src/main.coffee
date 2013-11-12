@@ -290,45 +290,61 @@ class AppNetLoader
     @options.threshold ||= 0.8
     @options.maxLength ||= 50 # total number of items we want to have in the list.
     @options.interval ||= 1000
-    @url = 'https://alpha-api.app.net/stream/0/posts/stream/global'
+    @options.beforeKey ||= 'before_id'
+    @options.sinceKey ||= 'since_id'
+    @options.url ||= 'https://alpha-api.app.net/stream/0/posts/stream/global'
+    @options.context ||= 'appNet'
+    @options.idKey ||= 'id'
     @$ = @runtime.$
     @getLatestData () ->
     @refresh = throttleAsync @getLatestData
   # to have it the other way around - we'll need to have the data being auto-scrolled down (and prevent
   # the old data from being fired...).
   getLatestData: (cb) => # time to figure out how to get the next sets of data based on threshold...
-    params = if @latestID then {since_id: @latestID} else {}
-    $.getJSON @url, params, (data, status, xhr) =>
+    params =
+      if @latestID
+        obj = {}
+        obj[@options.sinceKey] = @latestID
+        obj
+      else
+        {}
+    $.getJSON @options.url, params, (data, status, xhr) =>
       itemList = data.data.reverse()
       console.log "*** get more data", params, itemList
       if itemList.length > 0
-        @latestID = itemList[itemList.length - 1].id
-        if @runtime.context.get('appNet')
-          @runtime.context.push('appNet', itemList)
+        @latestID = itemList[itemList.length - 1][@options.idKey]
+        if @runtime.context.get(@options.context)
+          @runtime.context.push(@options.context, itemList)
         else
-          @runtime.context.set('appNet', itemList)
-          @oldestID = itemList[0].id
-        if @runtime.context.get('appNet').length > @options.maxLength
+          @runtime.context.set(@options.context, itemList)
+          @oldestID = itemList[0][@options.idKey]
+        if @runtime.context.get(@options.context).length > @options.maxLength
           console.log "*** pruning data"
-          @runtime.context.splice('appNet', 0, 20, []) # prune the prefix list...
-          @oldestID = @runtime.context.get('appNet')[0].id
+          @runtime.context.splice(@options.context, 0, 20, []) # prune the prefix list...
+          @oldestID = @runtime.context.get(@options.context)[0].id
       @$(@element).unbind 'scroll', @onScroll
       @$(@element).bind 'scroll', @onScroll
       cb()
   getOlderData: (cb) =>
-    params = if @oldestID then {before_id: @oldestID} else {}
-    $.getJSON @url, params, (data, status, xhr) =>
+    params =
+      if @oldestID
+        obj = {}
+        obj[@options.beforeKey] = @oldestID
+        obj
+      else
+        {}
+    $.getJSON @options.url, params, (data, status, xhr) =>
       itemList = data.data.reverse()
       console.log "*** get older data", params, itemList
       if itemList.length > 0
-        @latestID = itemList[itemList.length - 1].id
-        if @runtime.context.get('appNet')
-          @runtime.context.unshift('appNet', itemList)
+        @latestID = itemList[itemList.length - 1][@options.idKey]
+        if @runtime.context.get(@options.context)
+          @runtime.context.unshift(@options.context, itemList)
         else
-          @runtime.context.set('appNet', itemList)
-        if @runtime.context.get('appNet').length > @options.maxLength
+          @runtime.context.set(@options.context, itemList)
+        if @runtime.context.get(@options.context).length > @options.maxLength
           console.log "*** pruning data"
-          @runtime.context.splice('appNet', @runtime.context.get('appNet').length - 20, 20, [])
+          @runtime.context.splice(@options.context, @runtime.context.get(@options.context).length - 20, 20, [])
           # prune the prefix list...
       @$(@element).unbind 'scroll', @onScroll
       @$(@element).bind 'scroll', @onScroll
