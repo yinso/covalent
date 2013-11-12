@@ -11,7 +11,7 @@
             <div data-bind="@text $currentMilliSecond"></div>
             <div data-bind="@text $mousePos"></div>
             <div data-bind="@text delay(1000, $mousePos)"></div>
-            <div style="position: absolute; background-color: red; width: 150px; height: 50px" data-bind="@attr { style: delay(1000, $mousePos) }">Follow Me</div>
+            <div style="position: absolute; background-color: red; width: 150px; height: 50px" data-bind="@attr { style: delay(1000, $mousePos) || {} }">Follow Me</div>
         </div>
     </script>
     <script data-template-name="test-list" type="text/template">

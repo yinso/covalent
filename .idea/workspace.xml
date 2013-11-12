@@ -82,11 +82,11 @@
       <file leaf-file-name="test.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example/test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="143" selection-start="983" selection-end="983" vertical-scroll-proportion="0.45882353" vertical-offset="0" max-vertical-offset="645">
+            <state line="13" column="0" selection-start="840" selection-end="840" vertical-scroll-proportion="0.45882353" vertical-offset="0" max-vertical-offset="645">
               <folding>
-                <marker date="1384234501000" expanded="true" signature="486:1016" placeholder="..." />
-                <marker date="1384234501000" expanded="true" signature="864:933" placeholder="..." />
-                <marker date="1384234501000" expanded="true" signature="1150:1292" placeholder="..." />
+                <marker date="1384235503000" expanded="true" signature="486:1022" placeholder="..." />
+                <marker date="1384235503000" expanded="true" signature="864:933" placeholder="..." />
+                <marker date="1384235503000" expanded="true" signature="1156:1298" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -2798,11 +2798,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/example/test.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="143" selection-start="983" selection-end="983" vertical-scroll-proportion="0.45882353" vertical-offset="0" max-vertical-offset="645">
+        <state line="13" column="0" selection-start="840" selection-end="840" vertical-scroll-proportion="0.45882353" vertical-offset="0" max-vertical-offset="645">
           <folding>
-            <marker date="1384234501000" expanded="true" signature="486:1016" placeholder="..." />
-            <marker date="1384234501000" expanded="true" signature="864:933" placeholder="..." />
-            <marker date="1384234501000" expanded="true" signature="1150:1292" placeholder="..." />
+            <marker date="1384235503000" expanded="true" signature="486:1022" placeholder="..." />
+            <marker date="1384235503000" expanded="true" signature="864:933" placeholder="..." />
+            <marker date="1384235503000" expanded="true" signature="1156:1298" placeholder="..." />
           </folding>
         </state>
       </provider>
