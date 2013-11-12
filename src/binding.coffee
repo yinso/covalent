@@ -36,9 +36,9 @@ class EventBinding
     @runtime.$(@element).bind @prop, @refresh
   unbindElement: (@element) ->
     @runtime.$(@element).unbind @prop, @refresh
-  refresh: (evt) =>
+  refresh: (evt) ->
     console.log "#{@constructor.name}.refresh", evt
-    @callback.call @, @context, evt, @afterRefresh
+    @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @afterRefresh
   afterRefresh: (err, res) =>
 
 BindingFactory.register 'on', EventBinding
@@ -83,33 +83,33 @@ class TextBinding # value from Proxy to UI
     delete @proxies[proxy.prefix]
   onRefresh: (evt) =>
     #console.log "#{@constructor.name}.onRefresh", evt, @refresh
-    @callback.call @, @context, evt, @refresh
+    @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @refresh
   onMove: ({path, toPath, toProxy}) =>
     console.log 'TextBinding.onMove', path, toPath
     # how do I ensure this can be called twice without issues?
     if @proxies[path] # this is the easiest way, although a bit lazy
       @unbindProxy @proxies[path]
       @bindProxy toProxy
-  refresh: (err, evt, res) =>
+  refresh: (err, res) =>
     if not err
-      runtime.$(@element).html if res instanceof Object then JSON.stringify(res) else res
+      @runtime.$(@element).html if res instanceof Object then JSON.stringify(res) else res
 
 BindingFactory.register('text', TextBinding)
 
 class AttrBinding extends TextBinding
-  refresh: (err, evt, res) =>
+  refresh: (err, res) =>
     #console.log "AttrBinding.refresh", err, evt, res
     if not err
-      runtime.$(@element).attr @prop, res
+      @runtime.$(@element).attr @prop, res
 
 BindingFactory.register('attr', AttrBinding)
 
 class CssBinding extends TextBinding
-  refresh: (err, evt, res) =>
+  refresh: (err, res) =>
     if res
-      runtime.$(@element).addClass @prop
+      @runtime.$(@element).addClass @prop
     else
-      runtime.$(@element).removeClass @prop
+      @runtime.$(@element).removeClass @prop
 
 BindingFactory.register 'css', CssBinding
 

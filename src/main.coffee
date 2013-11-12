@@ -6,6 +6,7 @@ TemplateFactory = require './template'
 Compiler = require './compiler'
 Runtime = require './runtime'
 window.Coffee = require 'coffee-script'
+testCompiler = window.testCompiler = require '../test/compiler'
 
 class ContextStack
   constructor: (context) ->
@@ -217,7 +218,7 @@ test = (stmt) ->
   console.log '    CPS', JSON.stringify(cpsExp, null, 2)
   #console.log 'COMPILE', source
   console.log 'COMPILE', func
-
+###
 test '1'
 test '1 + 1'
 test '1 * (2 + 1)'
@@ -228,6 +229,7 @@ test 'if 1 == 3 { foo() } else { bar() }'
 test '1 + (if 1 == 1 { foo(1) } else { bar(2) })'
 test '1 + (if 1 == 0 { foo(1) baz(2) } else { bar(2) })'
 test 'baz({foo: 1, bar: 1 + bar() })'
+###
 
 $  ->
   window.proxy = null

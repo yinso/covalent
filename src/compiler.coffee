@@ -235,7 +235,7 @@ anfToCPS = (stack) ->
       if exp.funcall
         # we'll need to handle the callback...
         if resExp?.id == exp.let.id # this is the simplified version.
-          cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([{id: 'cb'}])}
+          cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([{id: 'cb'}]), cps: true}
         else
           callback =
             function: ''
@@ -248,7 +248,7 @@ anfToCPS = (stack) ->
                 cps: true
               }
             ]
-          cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([callback])}
+          cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([callback]), cps: true}
       else if exp.if
         thenExp = blockAddContinuationThenCPS exp.then, resExp, exp.let
         elseExp = blockAddContinuationThenCPS exp.else, resExp, exp.let
@@ -268,10 +268,10 @@ anfToCPS = (stack) ->
   res = cps stack
   if not (res instanceof Object)
     {funcall: {id: 'cb'}, args: [null, res]}
-  else if res.op or res.block
-    {funcall: {id: 'cb'}, args: [null, res]}
-  else
+  else if res.cps
     res
+  else
+    {funcall: {id: 'cb'}, args: [null, res]}
 
 class LineBuffer
   constructor: (@level = 0) ->
@@ -355,6 +355,7 @@ class Compiler
     anf = @expToANF(exp)
     cps = @anfToCPS(anf)
     compiled = @cpsToSource(cps, depends)
+    console.log 'Compiler.compileExp', compiled
     new Function ['cb'], """
         var self = this;
         #{compiled}
@@ -363,7 +364,7 @@ class Compiler
   anfToCPS: anfToCPS
   cpsToSource: (exp, depends = {}) ->
     newEnv = @newEnvironment {cb: {id: 'cb'}}, @runtime.env
-    @generate exp, newEnv, 3, {}
+    @generate exp, newEnv, 3, depends
   generate: (exp, env, level, depends, isLast = false) ->
     buffer = new LineBuffer(level) # here's the thing... are we going to write this in a way that'll
     @gen exp, env, buffer, depends, isLast
@@ -438,12 +439,14 @@ class Compiler
   genID: ({id}, env, buffer, depends, isLast) ->
     #if not @runtime.env.hasOwnProperty(id)
     #  throw new Error("Compiler.compile:unknown_id: #{id}")
-    if env[id]
+    if env.hasOwnProperty(id)
       buffer.write id
     else if @runtime.env.hasOwnProperty(id)
-      buffer.write "this.runtime.env['"
+      buffer.write "self.runtime.env['"
       buffer.write id
       buffer.write "']"
+    else if env[id]
+      buffer.write id
     else
       throw new Error("Compiler.compile:unknown_id: #{id}")
   genCell: ({cell}, env, buffer, depends, isLast) ->

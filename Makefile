@@ -1,11 +1,16 @@
 VPATH=src
 BUILDDIR=lib
+TESTDIR=test
+
 
 BEANDIR=.
 JSONDIR=.
 
 COFFEE_SOURCES= $(wildcard $(VPATH)/*.coffee)
 COFFEE_OBJECTS=$(patsubst $(VPATH)/%.coffee, $(BUILDDIR)/%.js, $(COFFEE_SOURCES))
+
+TEST_COFFEE_SOURCES= $(wildcard $(TESTDIR)/*.coffee)
+TEST_COFFEE_OBJECTS= $(patsubst $(TESTDIR)/%.coffee, $(TESTDIR)/%.js, $(TEST_COFFEE_SOURCES))
 
 BEAN_FILES=$(wildcard $(BEANDIR)/*.bean)
 JSON_FILES=$(patsubst $(BEANDIR)/%.bean, $(JSONDIR)/%.json, $(BEAN_FILES))
@@ -24,7 +29,7 @@ build: node_modules objects
 .PHONY: objects
 objects: $(JSON_FILES) src/covalent.js lib/main.js
 
-lib/main.js: $(COFFEE_SOURCES) src/covalent.js
+lib/main.js: $(COFFEE_SOURCES) src/covalent.js $(TEST_COFFEE_SOURCES)
 	./make.coffee 
 
 $(JSONDIR)/%.json: $(BEANDIR)/%.bean
@@ -51,6 +56,9 @@ node_modules:
 
 $(BUILDDIR)/%.js: $(VPATH)/%.coffee
 	coffee -o $(BUILDDIR) -c $<
+
+$(TESTDIR)/%.js: $(TESTDIR)/%.coffee
+	coffee -o $(TESTDIR) -c $<
 
 .PHONY: watch
 watch:

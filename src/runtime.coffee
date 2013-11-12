@@ -12,9 +12,11 @@ class Timer
     @thunk()
 
 builtIn = {}
-builtIn.delay = (milli, path, val, cb) ->
+
+builtIn.delay = (milli, val, cb) ->
   helper = () =>
-    cb null, @context.set path, val
+    #console.log 'delay', milli, val, cb
+    cb null, val
   timer = new Timer milli, helper
   timer.run()
 
