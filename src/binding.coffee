@@ -92,7 +92,12 @@ class TextBinding # value from Proxy to UI
       @bindProxy toProxy
   uponRefresh: (err, res) =>
     if not err
-      @runtime.$(@element).html if res instanceof Object then JSON.stringify(res) else res
+      if @element instanceof HTMLTitleElement # unfortunately we have to test for title this this way...
+        @runtime.$(@element.ownerDocument).attr('title', @flattenVal(res))
+      else
+        @runtime.$(@element).html @flattenVal(res)
+  flattenVal: (res) =>
+    if res instanceof Object then JSON.stringify(res) else res
 
 BindingFactory.register('text', TextBinding)
 
@@ -103,7 +108,7 @@ class AttrBinding extends TextBinding
       if @prop == 'style'
         @runtime.$(@element).css res
       else
-        @runtime.$(@element).attr @prop, res
+        @runtime.$(@element).attr @prop, @flattenVal(res)
 
 BindingFactory.register('attr', AttrBinding)
 

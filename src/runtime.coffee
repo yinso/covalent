@@ -49,7 +49,7 @@ builtIn.baz = (cb) ->
 class Runtime
   constructor: (@$, data = {}) -> # we take in jQuery...
     @compiler = new Compiler @
-    @factory = new TemplateManager @$, @
+    @factory = new TemplateManager @
     @context = new ObjectProxy(data)
     @env = builtIn # this is the environment to be used for compilation!
   compile: (stmt) ->
@@ -58,8 +58,10 @@ class Runtime
     @compiler.parse stmt
   loadTemplates: () ->
     @factory.load()
-  renderView: (name, tplName, element, context = @context.getProxy('.')) ->
-    @factory.setView name, tplName, element, context
+  renderView: (element, tplName, context = @context.getProxy('.')) ->
+    @factory.setView element, tplName, context
+  initializeView: (element) ->
+    @factory.initializeView element
   registerWidget: (name, widget) ->
     WidgetFactory.register name, widget
 

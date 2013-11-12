@@ -384,9 +384,10 @@ $  ->
 
       # let's load a template onto
       runtime.loadTemplates()
-      runtime.renderView 'test', 'test', '#test'
-      runtime.renderView 'test-list', 'test-list', '#test'
-      runtime.renderView( 'appNetList', 'appNetList', '#main')
+      runtime.initializeView document
+      runtime.renderView '#test', 'test'
+      runtime.renderView '#test', 'test-list'
+      runtime.renderView '#main', 'appNetList'
       milliSecond = () ->
         d = new Date()
         runtime.context.set 'currentMilliSecond', "#{d.toString()}.#{d.getMilliseconds()}"

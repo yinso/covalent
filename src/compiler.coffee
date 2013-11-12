@@ -373,7 +373,7 @@ class Compiler
   gen: (exp, env, buffer, depends, isLast) ->
     # let's generate
     if not (exp instanceof Object)
-      buffer.append exp
+      @genLiteral exp, env, buffer, depends, isLast
     else if exp.op
       @genOp exp, env, buffer, depends, isLast
     else if exp.funcall
@@ -396,6 +396,11 @@ class Compiler
       @genFunction exp, env, buffer, depends, isLast
     else
       throw new Error("Compiler.generate:unsupported_exp: #{JSON.stringify(exp)}")
+  genLiteral: (exp, env, buffer, depends, isLast) ->
+    if typeof(exp) != 'string'
+      return buffer.append exp
+    str = exp.replace(/"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n")
+    buffer.append "\"#{str}\""
   genOp: ({op, lhs, rhs}, env, buffer, depends, isLast) ->
     if (op == '!')
       buffer.write '!'

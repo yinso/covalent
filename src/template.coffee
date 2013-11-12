@@ -6,32 +6,39 @@
 
 
 class Template
-  @make: (template, runtime) ->
-    new @ template, runtime
-  constructor: (@template, @runtime) ->
-    $ = @runtime.$
-    @inner = $(@template)[0]
+  @make: (template, runtime, noClone = false) ->
+    element = runtime.$(template)[0]
+    new @ element, runtime
+  constructor: (@element, @runtime, @noClone = false) ->
+    @$ = @runtime.$
     @bindingFactories = []
-    for boundElt, i in $(@inner).filter('[data-bind]').add('[data-bind]', @inner).toArray()
-      bindings = @runtime.compile $(boundElt).data('bind')
+    for boundElt, i in @$(@element).filter('[data-bind]').add('[data-bind]', @element).toArray()
+      bindings = @runtime.compile @$(boundElt).data('bind')
       if bindings instanceof Array
         @bindingFactories.push bindings
       else
         throw new Error("Template:parse_binding_unsupported")
   destroy: () ->
+    if not @noClone # the template manages the element.
+      @$(@element).remove()
+    delete @$element
+    delete @$
     delete @runtime
     for factory in @bindingFactories
       factory.destroy()
   make: (context) ->
     new UIView context, @, @runtime
   clone: () ->
-    @runtime.$(@inner).clone()[0]
+    if @noClone
+      @element
+    else
+      @$(@element).clone()[0]
 
 class UIView
   constructor: (@context, @template, @runtime) ->
     @$ = runtime.$
     @bindings = []
-    @inner = @makeView()
+    @element = @initialize()
     @children = []
     @bindProxy @context
   destroy: () ->
@@ -39,8 +46,8 @@ class UIView
     @unbindProxy @context
     delete @context
     delete @template
-    @$(@inner).remove()
-    delete @inner
+    @$(@element).remove()
+    delete @element
     delete @$
     for binding in @bindings
       binding.destroy()
@@ -59,7 +66,7 @@ class UIView
   onMove: (evt) =>
     {path, toPath, toProxy} = evt
     @rebind toProxy
-  makeView: () ->
+  initialize: () ->
     view = @template.clone()
     boundElements = $(view).filter('[data-bind]').add('[data-bind]', view).toArray()
     if boundElements.length != @template.bindingFactories.length
@@ -71,18 +78,19 @@ class UIView
   refresh: (evt = {}) ->
     for binding in @bindings
       binding.refresh evt
-  prependTo: (@element) ->
-    @$(@element).prepend @inner
-  appendTo: (@element) ->
-    @$(@element).append @inner
+  prependTo: (@parent) ->
+    @$(@parent).prepend @element
+  appendTo: (@parent) ->
+    @$(@parent).append @element
   appendAfter: (template) ->
-    @$(template.inner).after @inner
+    @$(template.element).after @element
   detach: () ->
-    if @element
-      @$(@element).detach @inner
+    if @parent
+      @$(@parent).detach @element
 
 class TemplateManager
-  constructor: (@$, @runtime) ->
+  constructor: (@runtime) ->
+    @$ = @runtime.$
     console.log "TemplateManager.ctor"
     @templates = {}
     @instances = {}
@@ -98,20 +106,41 @@ class TemplateManager
       if @templates.hasOwnProperty(name)
         throw new Error("TemplateManager.duplicate_template_name: #{name}")
       @templates[name] = template
+  uniqueID: () ->
+    if not @id
+      @id = 1
+    "__covalent_#{@id++}"
+  elementID: (element) ->
+    id = @$(element).data('__covalent_id')
+    if not id
+      id = @uniqueID()
+      @$(element).data('__covalent_id', id)
+    id
   get: (name) ->
     if not @templates.hasOwnProperty(name)
       throw new Error "TemplateManager.unknown_template: #{name}"
     @templates[name]
-  makeView: (tplName, element, context = @runtime.context.getProxy('.')) ->
+  makeView: (element, tplName, context = @runtime.context.getProxy('.')) ->
     if not @templates.hasOwnProperty(tplName)
       throw new Error "TemplateManager.unknown_template: #{tplName}"
     view = @templates[tplName].make context
     view.appendTo element
     view
-  setView: (name, tplName, element, context = @runtime.context.getProxy('.')) ->
-    view = @makeView tplName, element, context
-    @instances[name] = view
+  setView: (element, tplName, context = @runtime.context.getProxy('.')) ->
+    view = @makeView element, tplName, context
+    @instances[@elementID(view.element)] = view
     view.refresh {}
     view
+  initializeView: (element, context = @runtime.context.getProxy('.')) ->
+    # does this template exist? that'll be the question...
+    # template can exist by name and it can exist by element as well...
+    template = Template.make element, @runtime, true
+    view = template.make context # this is automatically bound to the element as the element.
+    @instances[@elementID(element)] = view
+    view.refresh {}
+    view
+
+    # we are going to skip quite a bit of work here....
+
 
 module.exports = TemplateManager
