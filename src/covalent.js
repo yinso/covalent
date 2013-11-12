@@ -5309,6 +5309,17 @@ module.exports = (function(){
               matchFailed("[A-Z]");
             }
           }
+          if (result0 === null) {
+            if (input.charCodeAt(pos) === 95) {
+              result0 = "_";
+              pos++;
+            } else {
+              result0 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"_\"");
+              }
+            }
+          }
         }
         return result0;
       }
@@ -5346,13 +5357,24 @@ module.exports = (function(){
               }
             }
             if (result0 === null) {
-              if (/^[0-9]/.test(input.charAt(pos))) {
-                result0 = input.charAt(pos);
+              if (input.charCodeAt(pos) === 95) {
+                result0 = "_";
                 pos++;
               } else {
                 result0 = null;
                 if (reportFailures === 0) {
-                  matchFailed("[0-9]");
+                  matchFailed("\"_\"");
+                }
+              }
+              if (result0 === null) {
+                if (/^[0-9]/.test(input.charAt(pos))) {
+                  result0 = input.charAt(pos);
+                  pos++;
+                } else {
+                  result0 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("[0-9]");
+                  }
                 }
               }
             }

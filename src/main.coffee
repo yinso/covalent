@@ -3,6 +3,7 @@
 $ = require 'jquery'
 ObjectProxy = require './object'
 TemplateFactory = require './template'
+WidgetFactory = require './widget'
 Compiler = require './compiler'
 Runtime = require './runtime'
 window.Coffee = require 'coffee-script'
@@ -229,7 +230,99 @@ test 'if 1 == 3 { foo() } else { bar() }'
 test '1 + (if 1 == 1 { foo(1) } else { bar(2) })'
 test '1 + (if 1 == 0 { foo(1) baz(2) } else { bar(2) })'
 test 'baz({foo: 1, bar: 1 + bar() })'
+
+
+    _.throttle = function(func, wait, options) {
+    var context, args, result;
+  var timeout = null;
+  var previous = 0;
+  options || (options = {});
+  var later = function() {
+  previous = new Date;
+  timeout = null;
+  result = func.apply(context, args);
+  };
+  return function() {
+  var now = new Date;
+  if (!previous && options.leading === false) previous = now;
+  var remaining = wait - (now - previous);
+  context = this;
+  args = arguments;
+  if (remaining <= 0) {
+  clearTimeout(timeout);
+    timeout = null;
+    previous = now;
+    result = func.apply(context, args);
+  } else if (!timeout && options.trailing !== false) {
+timeout = setTimeout(later, remaining);
+  }
+  return result;
+  };
+  };
+
+
 ###
+
+
+# to throttle a call...
+# it basically does this...
+# 1 - a function - as soon as it's called, it's protected by a *lock*...
+throttleAsync = (func) ->
+  status = {called: false}
+  helper = () ->
+    console.log 'throttleAsync.start', status
+    func () ->
+      status.called = false # this should be used with async...???
+      console.log 'throttleAsync.end', status
+  () ->
+    if not status.called
+      status.called = true # immediately stop it... (can it fire fast enough to disrupt this???).
+      setTimeout(helper, 200) # how do we clear out the timeout afterwards? don't worry about this for now.
+    else
+      console.log 'callThrottled', status
+
+# in order to slow down the firing... we should do something the following...
+# 1 - set the firing to be true (multiple of them will set it the same way).
+# 2 - have an interval poll to retrieve the data call.
+# 3 - only rebind after successfully retrieving the call
+class AppNetLoader
+  constructor: (@element, @runtime, @options = {}) ->
+    @options.threshold ||= 0.8
+    @options.maxLength ||= 50 # total number of items we want to have in the list.
+    @options.interval ||= 1000
+    @url = 'https://alpha-api.app.net/stream/0/posts/stream/global'
+    @$ = @runtime.$
+    @getLatestData () ->
+    @refresh = throttleAsync @getLatestData
+  getLatestData: (cb) => # time to figure out how to get the next sets of data based on threshold...
+    params = if @latestID then {since_id: @latestID} else {}
+    $.getJSON @url, params, (data, status, xhr) =>
+      itemList = data.data.reverse()
+      console.log "*** get more data", params, itemList
+      if itemList.length > 0
+        @latestID = itemList[itemList.length - 1].id
+        if @runtime.context.get('appNet')
+          @runtime.context.push('appNet', itemList)
+        else
+          @runtime.context.set('appNet', itemList)
+        if @runtime.context.get('appNet').length > @options.maxLength
+          console.log "*** pruning data"
+          @runtime.context.splice('appNet', 0, 20, []) # prune the prefix list...
+      @$(@element).unbind 'scroll', @onScroll
+      @$(@element).bind 'scroll', @onScroll
+      cb()
+  destroy: () ->
+    @$(@element).unbind 'scroll', @onScroll
+    clearInterval @intervalID
+  onScroll: (evt) =>
+    scrollTop = @$(@element).scrollTop()
+    scrollHeight = @$(@element)[0].scrollHeight
+    height = @$(@element).height()
+    if ((height + scrollTop) / scrollHeight) > @options.threshold
+      @$(@element).unbind 'scroll', @onScroll
+      @refresh()
+
+WidgetFactory.register 'appNet', AppNetLoader
 
 $  ->
   window.proxy = null
@@ -247,13 +340,21 @@ $  ->
           {item: 'baz'}
           {item: 'baw'}
           ]
+
+      runtime.env.onScroll = (cb) -> # where is the particular widget that's mapped to???
+        console.log 'onScroll', runtime.$(@element).height(), runtime.$(@element).scrollTop(), $(@element)[0].scrollHeight
+
       # let's load a template onto
       runtime.loadTemplates()
       runtime.renderView 'test', 'test', '#test'
       runtime.renderView 'test-list', 'test-list', '#test'
+      runtime.renderView( 'appNetList', 'appNetList', '#main')
       milliSecond = () ->
         d = new Date()
         runtime.context.set 'currentMilliSecond', "#{d.toString()}.#{d.getMilliseconds()}"
       setInterval milliSecond, 100
       $(document).bind 'mousemove', (evt) ->
         runtime.context.set 'mousePos', {left: evt.pageX, top: evt.pageY}
+
+#scrollerBottom = event.node.getBoundingClientRect().bottom;
+#listBottom = this.nodes.stream.getBoundingClientRect().bottom;

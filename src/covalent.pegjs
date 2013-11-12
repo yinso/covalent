@@ -498,11 +498,13 @@ Identifier
 idChar1
   = [a-z]
   / [A-Z]
+  / '_'
 
 idChar
   = [a-z]
   / [A-Z]
   / '-'
+  / '_'
   / [0-9]
 
 Keywords

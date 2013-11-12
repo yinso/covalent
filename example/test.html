@@ -11,7 +11,7 @@
             <div data-bind="@text $currentMilliSecond"></div>
             <div data-bind="@text $mousePos"></div>
             <div data-bind="@text delay(1000, $mousePos)"></div>
-            <div style="position: absolute; background-color: red; width: 150px; height: 50px" data-bind="@attr { style: delay(1000, $mousePos) || {} }">Follow Me</div>
+            <!-- <div style="position: absolute; background-color: red; width: 150px; height: 50px" data-bind="@attr { style: delay(1000, $mousePos) || {} }">Follow Me</div> -->
         </div>
     </script>
     <script data-template-name="test-list" type="text/template">
@@ -21,6 +21,17 @@
     </script>
     <script data-template-name="test-list-item" type="text/template">
         <li data-bind="@text: $item"></li>
+    </script>
+    <script data-template-name="appNetList" type="text/template">
+        <ul style="overflow: scroll; width: 300px; height: 500px" data-bind="@each $appNet, 'appNetListItem'; @widget { appNet: {} }">
+        </ul>
+    </script>
+    <script data-template-name="appNetListItem" type="text/template">
+        <li>
+           <img data-bind="@attr {src: $user.avatar_image.url}" />
+           <span data-bind="@text $user.user_name"></span>
+           <div data-bind="@text $html"></div>
+        </li>
     </script>
 </head>
 <body>
