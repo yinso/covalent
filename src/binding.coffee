@@ -33,10 +33,11 @@ class EventBinding
     delete @callback
   rebind: (@context) ->
   bindElement: (@element) ->
-    @runtime.$(@element).bind @prop, @refresh
+    @runtime.$(@element).bind @prop, @eventRefresh
   unbindElement: (@element) ->
-    @runtime.$(@element).unbind @prop, @refresh
-  refresh: (evt) =>
+    @runtime.$(@element).unbind @prop, @eventRefresh
+  refresh: (evt) => # this is empty as EventBinding only reacts to UI events...
+  eventRefresh: (evt) =>
     console.log "#{@constructor.name}.refresh", evt
     @callback.call { runtime: @runtime, element: @element, context: @context, evt: evt }, @uponRefresh
   uponRefresh: (err, res) =>

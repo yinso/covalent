@@ -11,12 +11,29 @@
 ###
 
 class EachUIViewFactory
+  # if we want to enable template
   constructor: (@contextPath, @templateName, @runtime) ->
+    @$ = @runtime.$
   destroy: () ->
     delete @runtime
+    delete @$
   make: (context, element) ->
     if not @template
-      @template = @runtime.factory.get(@templateName)
+      if not @templateName
+        template =
+          if @$(element).children().length > 1
+            newParent = @$('<div></div>', element.ownerDocument)[0]
+            children = @$(element).children().appendTo newParent
+            newParent
+          else
+            child = @$(element).children()[0]
+            @$(child).detach()
+            child
+        #@$('[covalent-inner]', template).removeAttr('covalent-inner')
+        #@$(template).removeAttr('covalent-inner')
+        @template = @runtime.factory.makeTemplateByElement template
+      else
+        @template = @runtime.factory.get(@templateName)
     new EachUIView context.getProxy(@contextPath), element, @contextPath, @template, @runtime
 
 # EachUIView is actually a binding.

@@ -14,6 +14,8 @@ class ProxyAlias extends EventEmitter
       path
     else if path == '.'
       @prefix
+    else if typeof(path) == 'string' and path.indexOf('/') == 0 # starts with the path.
+      path.substring(1)
     else
       [ @prefix, path ].join '.'
   get: (path) ->

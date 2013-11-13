@@ -334,6 +334,7 @@ _tailBindingBlockExp
 
 EachBlockExpression
   = '@each' _ ':'? _ id:Reference _ ',' _ name:String _ ';'? { return { each : id.cell , template: name }; }
+  / '@each' _ ':'? _ id:Reference _ ';'? { return { each : id.cell }; }
 
 WithBlockExpression
   = '@with' _ ':'? _ id:Reference _ { return { with: id.cell }; }
@@ -478,7 +479,8 @@ ThisElement
   / 'this' { return { element: 'this' }; }
 
 Reference
-  = '$' path:ReferencePath { return { cell: path }; }
+  = '$/' path:ReferencePath { return { cell : '/' + path }; }
+  / '$' path:ReferencePath { return { cell: path }; }
   / id:Identifier { return {id: id}; }
 
 ReferencePath

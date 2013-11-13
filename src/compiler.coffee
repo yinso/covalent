@@ -490,7 +490,6 @@ class Compiler
       buffer.dedent()
       buffer.writeLine "}).call(this)"
   genElement: ({element, prop}, env, buffer, depends, isLast) ->
-    # this is appearing on RHS (i.e. getting the values)
     buffer.write("self.runtime.$(")
     buffer.write "self.element"
     buffer.write ")"
@@ -506,6 +505,9 @@ class Compiler
       when "absLeft" then ".offset().left"
       when "absTop" then ".offset().top"
       when "offset" then ".offset()"
+      when "index" then ".index()"
+      when "scrollTop" then "[0].scrollTop"
+      when "scrollHeight" then ".scrollHeight()"
       else throw new Error("Compiler.compile:unknown_element_property: #{prop}")
 
   genObject: ({object}, env, buffer, depends, isLast) ->

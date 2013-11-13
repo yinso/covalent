@@ -1,6 +1,7 @@
 <html>
 <head>
     <title data-bind="@text 'Hello: {' + $mousePos.left + ', ' + $mousePos.top + '}' "></title>
+    <link href="test.css" type="text/css" rel="stylesheet"/>
     <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
     <script type="text/javascript" src="http://github.com/jashkenas/coffee-script/raw/master/extras/coffee-script.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.1/require.js" data-main="../lib/main"></script>
@@ -41,6 +42,35 @@
         <li><a href="">Click Me 2</a></li>
         <li><a href="">Click Me 3</a></li>
     </ul>
+</div>
+
+<p class='current-rating'>current rating: <strong data-bind="@text: $rating"></strong></p>
+<div class='ratings'>
+    <h3>Clickable Rating</h3>
+
+    <div class='rating' data-bind="@each $stars">
+        <span class="star" data-bind="
+            @class {
+                selected: $/rating > this.index ;
+                highlighted: $/highlight > this.index
+            }
+            @on {
+                click: $/rating = this.index + 1 // we'll still need ways to escape back to the original root pot!
+                hover: $/highlight = this.index + 1 // it means somehow these lines got triggered during instantiation.
+            }
+        ">&#10029;</span>
+    </div>
+
+    <h3>Readonly rating</h3>
+
+    <div class='rating readonly' data-bind="@each $stars">
+        <span class="star" data-bind="
+            @class {
+                selected: $/rating > this.index ;
+                highlighted: $/highlight > this.index
+            }
+        ">&#10029;</span>
+    </div>
 </div>
 
 <div id="main"></div>

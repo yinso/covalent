@@ -378,7 +378,9 @@ $  ->
           {item: 'baz'}
           {item: 'baw'}
           ]
-
+      runtime.context.set 'stars', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      runtime.context.set 'rating', 2
+      runtime.context.set 'hightlight', 0
       runtime.env.onScroll = (cb) -> # where is the particular widget that's mapped to???
         console.log 'onScroll', runtime.$(@element).height(), runtime.$(@element).scrollTop(), $(@element)[0].scrollHeight
 

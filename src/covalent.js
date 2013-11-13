@@ -3254,6 +3254,85 @@ module.exports = (function(){
         if (result0 === null) {
           pos = pos0;
         }
+        if (result0 === null) {
+          pos0 = pos;
+          pos1 = pos;
+          if (input.substr(pos, 5) === "@each") {
+            result0 = "@each";
+            pos += 5;
+          } else {
+            result0 = null;
+            if (reportFailures === 0) {
+              matchFailed("\"@each\"");
+            }
+          }
+          if (result0 !== null) {
+            result1 = parse__();
+            if (result1 !== null) {
+              if (input.charCodeAt(pos) === 58) {
+                result2 = ":";
+                pos++;
+              } else {
+                result2 = null;
+                if (reportFailures === 0) {
+                  matchFailed("\":\"");
+                }
+              }
+              result2 = result2 !== null ? result2 : "";
+              if (result2 !== null) {
+                result3 = parse__();
+                if (result3 !== null) {
+                  result4 = parse_Reference();
+                  if (result4 !== null) {
+                    result5 = parse__();
+                    if (result5 !== null) {
+                      if (input.charCodeAt(pos) === 59) {
+                        result6 = ";";
+                        pos++;
+                      } else {
+                        result6 = null;
+                        if (reportFailures === 0) {
+                          matchFailed("\";\"");
+                        }
+                      }
+                      result6 = result6 !== null ? result6 : "";
+                      if (result6 !== null) {
+                        result0 = [result0, result1, result2, result3, result4, result5, result6];
+                      } else {
+                        result0 = null;
+                        pos = pos1;
+                      }
+                    } else {
+                      result0 = null;
+                      pos = pos1;
+                    }
+                  } else {
+                    result0 = null;
+                    pos = pos1;
+                  }
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+          if (result0 !== null) {
+            result0 = (function(offset, id) { return { each : id.cell }; })(pos0, result0[4]);
+          }
+          if (result0 === null) {
+            pos = pos0;
+          }
+        }
         return result0;
       }
       
@@ -5102,13 +5181,13 @@ module.exports = (function(){
         
         pos0 = pos;
         pos1 = pos;
-        if (input.charCodeAt(pos) === 36) {
-          result0 = "$";
-          pos++;
+        if (input.substr(pos, 2) === "$/") {
+          result0 = "$/";
+          pos += 2;
         } else {
           result0 = null;
           if (reportFailures === 0) {
-            matchFailed("\"$\"");
+            matchFailed("\"$/\"");
           }
         }
         if (result0 !== null) {
@@ -5124,19 +5203,50 @@ module.exports = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, path) { return { cell: path }; })(pos0, result0[1]);
+          result0 = (function(offset, path) { return { cell : '/' + path }; })(pos0, result0[1]);
         }
         if (result0 === null) {
           pos = pos0;
         }
         if (result0 === null) {
           pos0 = pos;
-          result0 = parse_Identifier();
+          pos1 = pos;
+          if (input.charCodeAt(pos) === 36) {
+            result0 = "$";
+            pos++;
+          } else {
+            result0 = null;
+            if (reportFailures === 0) {
+              matchFailed("\"$\"");
+            }
+          }
           if (result0 !== null) {
-            result0 = (function(offset, id) { return {id: id}; })(pos0, result0);
+            result1 = parse_ReferencePath();
+            if (result1 !== null) {
+              result0 = [result0, result1];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+          if (result0 !== null) {
+            result0 = (function(offset, path) { return { cell: path }; })(pos0, result0[1]);
           }
           if (result0 === null) {
             pos = pos0;
+          }
+          if (result0 === null) {
+            pos0 = pos;
+            result0 = parse_Identifier();
+            if (result0 !== null) {
+              result0 = (function(offset, id) { return {id: id}; })(pos0, result0);
+            }
+            if (result0 === null) {
+              pos = pos0;
+            }
           }
         }
         return result0;

@@ -1,4 +1,6 @@
 
+EachTemplate = require './each'
+
 ###
 
 
@@ -8,13 +10,26 @@
 class Template
   @make: (template, runtime, noClone = false) ->
     element = runtime.$(template)[0]
-    new @ element, runtime
+    new @ element, runtime, noClone
   constructor: (@element, @runtime, @noClone = false) ->
     @$ = @runtime.$
     @bindingFactories = []
+    # we'll need to make sure that if we come across each, we'll need to start skipping the rest of the items.
+    eachElt = null
     for boundElt, i in @$(@element).filter('[data-bind]').add('[data-bind]', @element).toArray()
+      if eachElt
+        if @$(eachElt).has(boundElt).length > 0
+          @$(boundElt).attr('covalent-inner', true)
+          continue # skip over the current element.
+        else
+          # we have done traversing through the rest of the order... it's time to reset each
+          eachElt = null
       bindings = @runtime.compile @$(boundElt).data('bind')
+      # check to see if any of them is an EachTemplate.
       if bindings instanceof Array
+        for binding in bindings
+          if binding instanceof EachTemplate
+            eachElt = boundElt
         @bindingFactories.push bindings
       else
         throw new Error("Template:parse_binding_unsupported")
@@ -68,7 +83,9 @@ class UIView
     @rebind toProxy
   initialize: () ->
     view = @template.clone()
-    boundElements = $(view).filter('[data-bind]').add('[data-bind]', view).toArray()
+    boundElements = $(view).filter('[data-bind]').add('[data-bind]', view).not('[covalent-inner]').toArray()
+    $('[covalent-inner]', view).removeAttr('covalent-inner')
+    # we now want to mark the rest as skipped - I might as well add it in...
     if boundElements.length != @template.bindingFactories.length
       throw new Error("Template.ctor:mismatch_bindings_length")
     for i in [0...boundElements.length]
@@ -131,10 +148,12 @@ class TemplateManager
     @instances[@elementID(view.element)] = view
     view.refresh {}
     view
+  makeTemplateByElement: (element, noClone = false) ->
+    template = Template.make element, @runtime, noClone
+    @templates[@elementID(element)] = template
+    template
   initializeView: (element, context = @runtime.context.getProxy('.')) ->
-    # does this template exist? that'll be the question...
-    # template can exist by name and it can exist by element as well...
-    template = Template.make element, @runtime, true
+    template = @makeTemplateByElement(element, true)
     view = template.make context # this is automatically bound to the element as the element.
     @instances[@elementID(element)] = view
     view.refresh {}
