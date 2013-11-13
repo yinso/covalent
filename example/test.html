@@ -23,57 +23,55 @@
     <script data-template-name="test-list-item" type="text/template">
         <li data-bind="@text: $item"></li>
     </script>
-    <script data-template-name="appNetList" type="text/template">
-        <ul style="overflow: scroll; width: 300px; height: 500px" data-bind="@each $appNet, 'appNetListItem'; @widget { appNet: {} }">
-        </ul>
-    </script>
-    <script data-template-name="appNetListItem" type="text/template">
-        <li>
-           <img data-bind="@attr {src: $user.avatar_image.url}" />
-           <span data-bind="@text $user.user_name"></span>
-           <div data-bind="@text $html"></div>
-        </li>
-    </script>
 </head>
 <body>
-<div id="test">
-    <ul>
-        <li><a href="">Click Me</a></li>
-        <li><a href="">Click Me 2</a></li>
-        <li><a href="">Click Me 3</a></li>
-    </ul>
-</div>
+    <div id="test"></div>
 
-<p class='current-rating'>current rating: <strong data-bind="@text: $rating"></strong></p>
-<div class='ratings'>
-    <h3>Clickable Rating</h3>
+    <div>
+        <p class='current-rating'>current rating: <strong data-bind="@text: $rating"></strong></p>
+        <div class='ratings'>
+            <h3>Clickable Rating</h3>
 
-    <div class='rating' data-bind="@each $stars">
-        <span class="star" data-bind="
-            @class {
-                selected: $/rating > this.index ;
-                highlighted: $/highlight > this.index
-            }
-            @on {
-                click: $/rating = this.index + 1 // we'll still need ways to escape back to the original root pot!
-                hover: $/highlight = this.index + 1 // it means somehow these lines got triggered during instantiation.
-            }
-        ">&#10029;</span>
+            <div class='rating' data-bind="@each $stars">
+                <span class="star" data-bind="
+                    @class {
+                        selected: $/rating > this.index
+                        highlighted: $/highlight > this.index
+                    }
+                    @on {
+                        click: $/rating = this.index + 1
+                        hover: $/highlight = this.index + 1
+                    }
+                ">&#10029;</span>
+            </div>
+
+            <h3>Readonly rating</h3>
+
+            <div class='rating readonly' data-bind="@each $stars">
+                <span class="star" data-bind="
+                    @class {
+                        selected: $/rating > this.index ;
+                        highlighted: $/highlight > this.index
+                    }
+                ">&#10029;</span>
+            </div>
+        </div>
     </div>
 
-    <h3>Readonly rating</h3>
+    <div id="main">
+        <ul style="overflow: scroll; width: 300px; height: 500px"
+            data-bind="@each $appNet;
+                    @widget { appNet: {} }
+                    ">
+            <li>
+                <img data-bind="@attr {src: $user.avatar_image.url}" />
+                <span data-bind="@text $user.user_name"></span>
+                <div data-bind="@text $html"></div>
+            </li>
+        </ul>
 
-    <div class='rating readonly' data-bind="@each $stars">
-        <span class="star" data-bind="
-            @class {
-                selected: $/rating > this.index ;
-                highlighted: $/highlight > this.index
-            }
-        ">&#10029;</span>
+
     </div>
-</div>
-
-<div id="main"></div>
 
 </body>
 </html>
