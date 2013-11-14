@@ -102,7 +102,12 @@
         <entry file="file://$PROJECT_DIR$/example/example.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="14" column="0" selection-start="219" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6525">
-              <folding />
+              <folding>
+                <marker date="1384410523000" expanded="true" signature="15:216" placeholder="{...}" />
+                <marker date="1384410523000" expanded="true" signature="28:131" placeholder="{&quot;jquery&quot;: &quot;../lib/jquery&quot;...}" />
+                <marker date="1384410523000" expanded="true" signature="333:13204" placeholder="{...}" />
+                <marker date="1384410523000" expanded="true" signature="349:13163" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -459,7 +464,12 @@
     <entry file="file://$PROJECT_DIR$/example/example.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="14" column="0" selection-start="219" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6525">
-          <folding />
+          <folding>
+            <marker date="1384410523000" expanded="true" signature="15:216" placeholder="{...}" />
+            <marker date="1384410523000" expanded="true" signature="28:131" placeholder="{&quot;jquery&quot;: &quot;../lib/jquery&quot;...}" />
+            <marker date="1384410523000" expanded="true" signature="333:13204" placeholder="{...}" />
+            <marker date="1384410523000" expanded="true" signature="349:13163" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
