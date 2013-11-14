@@ -1,13 +1,7 @@
 {EventEmitter} = require 'events'
 
 $ = require 'jquery'
-ObjectProxy = require './object'
-TemplateFactory = require './template'
-WidgetFactory = require './widget'
-Compiler = require './compiler'
-Runtime = require './runtime'
-window.Coffee = require 'coffee-script'
-testCompiler = window.testCompiler = require '../test/compiler'
+Runtime = require 'covalent'
 
 class ContextStack
   constructor: (context) ->
@@ -185,7 +179,7 @@ mockLoggedIn = (url, cb) ->
 # 1 - all class objects are EventEmitter - this is already easy to handle now.
 # 2 - we can handle all of the work directly from event Emitter...
 
-class Account extends ObjectProxy
+class Account extends Runtime.ObjectProxy
   constructor: () ->
     super {}
   load: () ->
@@ -281,6 +275,11 @@ throttleAsync = (func) ->
     else
       console.log 'callThrottled', status
 
+
+Runtime.registerFunc 'power', Math.pow
+Runtime.registerFunc 'abs', Math.abs
+Runtime.registerFunc 'now', () -> new Date()
+
 # in order to slow down the firing... we should do something the following...
 # 1 - set the firing to be true (multiple of them will set it the same way).
 # 2 - have an interval poll to retrieve the data call.
@@ -360,7 +359,7 @@ class AppNetLoader
       @$(@element).unbind 'scroll', @onScroll
       @refresh()
 
-WidgetFactory.register 'appNet', AppNetLoader
+Runtime.registerWidget 'appNet', AppNetLoader
 
 $  ->
   window.proxy = null
@@ -389,7 +388,6 @@ $  ->
       runtime.initializeView document
       runtime.renderView '#test', 'test'
       runtime.renderView '#test', 'test-list'
-      runtime.renderView '#main', 'appNetList'
       milliSecond = () ->
         d = new Date()
         runtime.context.set 'currentMilliSecond', "#{d.toString()}.#{d.getMilliseconds()}"

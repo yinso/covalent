@@ -81,7 +81,7 @@ deepEqual = (o1, o2) ->
   does is to flatten out the syntax tree into a syntax "stack". A-Normal Form similar  to
   SSA (Single-State Assignment)
 
-  We mark the statements where we are generating a new binding with let: <arg> so the CPS function knows we
+  We mark the statements where we are generating a new binding with anf: <arg> so the CPS function knows we
   explicitly mark it.
 
   NOTE - An `if` statement has two branches, and both will generate different results. In our implementation we
@@ -109,7 +109,7 @@ expToANF = (exp) ->
         anfExp arg, stack
     err = gensym("err")
     res = gensym("res")
-    stack.push {let: res, err: err, funcall: func, args: resArgs}
+    stack.push {anf: res, err: err, funcall: func, args: resArgs}
     res
 
   anfIf = (exp, stack) ->
@@ -120,7 +120,7 @@ expToANF = (exp) ->
     else
       err = gensym("err")
       res = gensym("res")
-      stack.push {let: res, if: resExp.if, then: resExp.then, else: resExp.else, err: err}
+      stack.push {anf: res, if: resExp.if, then: resExp.then, else: resExp.else, err: err}
       res
 
   anfBlock = ({block}, stack) ->
@@ -204,8 +204,8 @@ anfToCPS = (stack) ->
     # we'll walk backwards...
     for i in [stack.length - 1..0] by -1
       exp = stack[i]
-      if exp.let
-        return exp.let
+      if exp.anf
+        return exp.anf
 
   stackAddContinuation = (stack, cont, res) ->
     newStack = [].concat stack
@@ -215,10 +215,10 @@ anfToCPS = (stack) ->
     newStack.push cont
     newStack
 
-  blockAddContinuationThenCPS = (stack, cont, letRes) ->
-    stackLet = lastResFromBlock(stack)
-    newContinuation = swapCpsID cont, letRes, stackLet
-    newStack = stackAddContinuation stack, newContinuation, stackLet
+  blockAddContinuationThenCPS = (stack, cont, anfRes) ->
+    stackAnf = lastResFromBlock(stack)
+    newContinuation = swapCpsID cont, anfRes, stackAnf
+    newStack = stackAddContinuation stack, newContinuation, stackAnf
     anfToCPS newStack
 
   cpsInner = (stack, i, resExp) ->
@@ -231,16 +231,16 @@ anfToCPS = (stack) ->
       else
         resExp = {block: [exp, resExp]}
       cpsInner stack, i - 1, resExp
-    else if exp.let
+    else if exp.anf
       err = exp.err
       if exp.funcall
         # we'll need to handle the callback...
-        if resExp?.id == exp.let.id # this is the simplified version.
+        if resExp?.id == exp.anf.id # this is the simplified version.
           cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([{id: 'cb'}]), cps: true}
         else
           callback =
             function: ''
-            args: [exp.err.id, exp.let.id]
+            args: [exp.err.id, exp.anf.id]
             body: [
               {
                 if: err
@@ -251,11 +251,11 @@ anfToCPS = (stack) ->
             ]
           cpsInner stack, i - 1, {funcall: exp.funcall, args: exp.args.concat([callback]), cps: true}
       else if exp.if
-        thenExp = blockAddContinuationThenCPS exp.then, resExp, exp.let
-        elseExp = blockAddContinuationThenCPS exp.else, resExp, exp.let
+        thenExp = blockAddContinuationThenCPS exp.then, resExp, exp.anf
+        elseExp = blockAddContinuationThenCPS exp.else, resExp, exp.anf
         cpsInner stack, i - 1, {if: exp.if, then: thenExp, else: elseExp, cps: true}
       else
-        throw new Error("unknown_anf_let_form: #{JSON.stringify(exp, null, 2)}")
+        throw new Error("unknown_anf_form: #{JSON.stringify(exp, null, 2)}")
     else # we should convert the res into a block if it isn't one.
       if resExp.block
         resExp.block.unshift exp

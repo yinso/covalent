@@ -4,49 +4,40 @@ TemplateManager = require './template'
 WidgetFactory = require './widget'
 ObjectProxy = require './object'
 
-class Timer
-  constructor: (@milli, @thunk) ->
-  run: () ->
-    @id = setTimeout @callMe, @milli
-  callMe: () =>
-    clearTimeout @id
-    @thunk()
-
 builtIn = {}
 
 builtIn.delay = (milli, val, cb) ->
+  id = null
   helper = () =>
-    #console.log 'delay', milli, val, cb
+    clearTimeout id
     cb null, val
-  timer = new Timer milli, helper
-  timer.run()
-
-builtIn.foo = () ->
-  cb = arguments[arguments.length - 1]
-  res = 0
-  for i in [0...arguments.length - 1]
-    res += arguments[i]
-  # we are going to do nothing with this function.
-  cb null, res
-
-builtIn.bar = (cb) ->
-  cb = arguments[arguments.length - 1]
-  res = 0
-  for i in [0...arguments.length - 1]
-    res += arguments[i]
-  # we are going to do nothing with this function.
-  cb null, res
-
-builtIn.baz = (cb) ->
-  cb = arguments[arguments.length - 1]
-  res = 0
-  for i in [0...arguments.length - 1]
-    res += arguments[i]
-  # we are going to do nothing with this function.
-  cb null, res
-
+  id = setTimeout helper, milli
 
 class Runtime
+  @ObjectProxy: ObjectProxy
+  @registerWidget: (name, widget) ->
+    WidgetFactory.register name, widget
+  @registerFunc: (name, proc) ->
+    if not proc instanceof Function
+      throw new Error("Runtime.registerFunc:not_a_function: #{proc}")
+    if builtIn.hasOwnProperty(name)
+      throw new Error("Runtime.registerFunc:name_already_in_use: #{name}")
+    helper = () ->
+      cb = arguments[arguments.length - 1]
+      args = (arguments[i] for i in [0...arguments.length - 1])
+      self = this
+      try
+        res = proc.apply this, args
+        cb null, res
+      catch e
+        cb e
+    builtIn[name] = helper
+  @registerAsyncFunc: (name, proc) ->
+    if not proc instanceof Function
+      throw new Error("Runtime.registerFunc:not_a_function: #{proc}")
+    if builtIn.hasOwnProperty(name)
+      throw new Error("Runtime.registerFunc:name_already_in_use: #{name}")
+    builtIn[name] = proc
   constructor: (@$, data = {}) -> # we take in jQuery...
     @compiler = new Compiler @
     @factory = new TemplateManager @
@@ -62,10 +53,5 @@ class Runtime
     @factory.setView element, tplName, context
   initializeView: (element) ->
     @factory.initializeView element
-  registerWidget: (name, widget) ->
-    WidgetFactory.register name, widget
-
-
-
 
 module.exports = Runtime

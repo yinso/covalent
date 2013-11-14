@@ -2,9 +2,7 @@
 <head>
     <title data-bind="@text 'Hello: {' + $mousePos.left + ', ' + $mousePos.top + '}' "></title>
     <link href="test.css" type="text/css" rel="stylesheet"/>
-    <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
-    <script type="text/javascript" src="http://github.com/jashkenas/coffee-script/raw/master/extras/coffee-script.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.1/require.js" data-main="../lib/main"></script>
+    <script src="../lib/require.js" data-main="./example.js"></script>
     <script data-template-name="test" type="text/template">
         <div>
             <div data-bind="@text $accountHome.id"></div>

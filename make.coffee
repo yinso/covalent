@@ -1,11 +1,10 @@
 #!/usr/bin/env coffee
-amdify = require 'amdify'
+amdee = require 'amdee'
 
-amdify.run # this can automatically handle multiple files!  just need to point to the entry point.
+amdee.run # this can automatically handle multiple files!  just need to point to the entry point.
   source: 'src/main.coffee'
   target: 'lib/main.js'
-  # watch: true
-  requirejs:
+  requireJS:
     paths:
         jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'
         'coffee-script': 'http://github.com/jashkenas/coffee-script/raw/master/extras/coffee-script'

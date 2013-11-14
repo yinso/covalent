@@ -1,0 +1,13 @@
+amdee:
+  main: './main.coffee'
+  skip: ['jquery', 'coffee-script']
+  requireJS:
+    paths:
+      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'
+      jquery: '../lib/jquery'
+      covalent: '../lib/covalent'
+      builtin: '../lib/builtin'
+    shim:
+      jquery:
+        deps: []
+        exports: 'jQuery'

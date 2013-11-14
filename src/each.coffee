@@ -127,6 +127,7 @@ class EachUIView
     @children.splice i, 1
 
 
+
 #BindingFactory.register 'each', EachUIView
 
 module.exports = EachUIViewFactory

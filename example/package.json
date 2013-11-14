@@ -1,0 +1,22 @@
+{
+  "amdee": {
+    "main": "./main.coffee",
+    "skip": [
+      "jquery",
+      "coffee-script"
+    ],
+    "requireJS": {
+      "paths": {
+        "jquery": "../lib/jquery",
+        "covalent": "../lib/covalent",
+        "builtin": "../lib/builtin"
+      },
+      "shim": {
+        "jquery": {
+          "deps": [],
+          "exports": "jQuery"
+        }
+      }
+    }
+  }
+}

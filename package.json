@@ -15,11 +15,12 @@
     "test": "make test",
     "prepublish": "make"
   },
+  "main": "./lib/main.js",
   "dependencies": {
-    "coffee-script": "=1.4.0",
-    "amdify": "git+ssh://git@bitbucket.org:yinso/amdify.git#master"
+    "coffee-script": "=1.4.0"
   },
   "devDependencies": {
+    "amdee": "~ 0.4.0",
     "jquery": "=1.8.3",
     "jsdom": "=0.8.6",
     "chai": "= 1.4.0",
@@ -29,5 +30,8 @@
     "libxmljs": "=0.6.1",
     "coffee-bean": "=0.1.0",
     "pegjs": "=0.7.0"
+  },
+  "amdee": {
+    "main": "./src/runtime.coffee"
   }
 }

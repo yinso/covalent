@@ -18,8 +18,6 @@ JSON_FILES=$(patsubst $(BEANDIR)/%.bean, $(JSONDIR)/%.json, $(BEAN_FILES))
 GRAMMAR_DIR=lib
 
 GRAMMAR_FILES=$(wildcard $(GRAMMAR_DIR)/*.pegjs)
-#PARSER_FILES=$(patsubst $(GRAMMAR_DIR)%.pegjs, $(BUILDDIR)/%.js, $(GRAMMAR_FILES))
-#./node_modules/.bin/amdify --source src/main.coffee --target lib/main.js
 
 all: build
 
@@ -27,10 +25,16 @@ all: build
 build: node_modules objects 
 
 .PHONY: objects
-objects: $(JSON_FILES) src/covalent.js lib/main.js
+objects: $(JSON_FILES) src/covalent.js lib/covalent.js example/example.js example/package.json
 
-lib/main.js: $(COFFEE_SOURCES) src/covalent.js $(TEST_COFFEE_SOURCES)
-	./make.coffee 
+lib/covalent.js: $(COFFEE_SOURCES) src/covalent.js $(TEST_COFFEE_SOURCES)
+	./node_modules/.bin/amdee --source . --target lib/covalent.js
+
+example/example.js: example/main.coffee lib/covalent.js example/package.json
+	./node_modules/.bin/amdee --source example/main.coffee --target example/example.js
+
+example/package.json: example/package.bean
+	./node_modules/.bin/bean --source $<
 
 $(JSONDIR)/%.json: $(BEANDIR)/%.bean
 	./node_modules/.bin/bean --source $<
