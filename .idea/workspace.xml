@@ -26,7 +26,7 @@
       <file leaf-file-name="main.coffee" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/main.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="361" column="0" selection-start="11575" selection-end="11575" vertical-scroll-proportion="0.0" vertical-offset="5130" max-vertical-offset="6075">
+            <state line="200" column="7" selection-start="5890" selection-end="5890" vertical-scroll-proportion="0.0" vertical-offset="5559" max-vertical-offset="6075">
               <folding />
             </state>
           </provider>
@@ -35,7 +35,7 @@
       <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="435">
+            <state line="228" column="0" selection-start="8857" selection-end="8857" vertical-scroll-proportion="1.1034483" vertical-offset="2940" max-vertical-offset="3555">
               <folding />
             </state>
           </provider>
@@ -56,7 +56,16 @@
       <file leaf-file-name="package.bean" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.bean">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="0" selection-start="631" selection-end="631" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
+            <state line="24" column="0" selection-start="513" selection-end="513" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="17" selection-start="19" selection-end="19" vertical-scroll-proportion="-0.625" vertical-offset="0" max-vertical-offset="540">
               <folding />
             </state>
           </provider>
@@ -92,16 +101,7 @@
       <file leaf-file-name="example.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/example.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="0" selection-start="17" selection-end="17" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6525">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="covalent.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/covalent.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="0" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="147450">
+            <state line="14" column="0" selection-start="219" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6525">
               <folding />
             </state>
           </provider>
@@ -110,7 +110,7 @@
       <file leaf-file-name="test.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="0" selection-start="302" selection-end="302" vertical-scroll-proportion="-3.75" vertical-offset="0" max-vertical-offset="1200">
+            <state line="5" column="0" selection-start="171" selection-end="242" vertical-scroll-proportion="-3.125" vertical-offset="0" max-vertical-offset="1200">
               <folding>
                 <marker date="1384410488000" expanded="true" signature="314:859" placeholder="..." />
                 <marker date="1384410488000" expanded="true" signature="993:1135" placeholder="..." />
@@ -132,19 +132,19 @@
         <option value="$PROJECT_DIR$/src/object.coffee" />
         <option value="$PROJECT_DIR$/src/binding.coffee" />
         <option value="$PROJECT_DIR$/src/covalent.pegjs" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/template.coffee" />
         <option value="$PROJECT_DIR$/src/compiler.coffee" />
         <option value="$PROJECT_DIR$/make.coffee" />
         <option value="$PROJECT_DIR$/lib/builtin.js" />
         <option value="$PROJECT_DIR$/src/main.coffee" />
         <option value="$PROJECT_DIR$/Makefile" />
-        <option value="$PROJECT_DIR$/package.bean" />
         <option value="$PROJECT_DIR$/src/each.coffee" />
         <option value="$PROJECT_DIR$/src/runtime.coffee" />
         <option value="$PROJECT_DIR$/example/main.coffee" />
         <option value="$PROJECT_DIR$/example/package.bean" />
         <option value="$PROJECT_DIR$/example/test.html" />
+        <option value="$PROJECT_DIR$/package.bean" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -383,19 +383,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="17" selection-start="19" selection-end="19" vertical-scroll-proportion="-0.625" vertical-offset="0" max-vertical-offset="630">
-          <folding>
-            <marker date="1384409210000" expanded="true" signature="-1:-1" placeholder="[...]" />
-            <marker date="1384409210000" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1384409210000" expanded="true" signature="-1:-1" placeholder="{&quot;jquery&quot;: &quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery&quot;...}" />
-            <marker date="1384409210000" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1384409210000" expanded="true" signature="-1:-1" placeholder="{&quot;exports&quot;: &quot;jQuery&quot;...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/make.coffee">
       <provider selected="true" editor-type-id="text-editor">
         <state line="21" column="0" selection-start="398" selection-end="1224" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="855">
@@ -417,16 +404,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.bean">
+    <entry file="file://$PROJECT_DIR$/lib/covalent.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="0" selection-start="631" selection-end="631" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
+        <state line="2" column="0" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="147450">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/covalent.js">
+    <entry file="file://$PROJECT_DIR$/example/test.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="147450">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="870">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.bean">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="513" selection-end="513" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
           <folding />
         </state>
       </provider>
@@ -438,9 +432,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/example/test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="171" selection-end="242" vertical-scroll-proportion="-3.125" vertical-offset="0" max-vertical-offset="1200">
+          <folding>
+            <marker date="1384410488000" expanded="true" signature="314:859" placeholder="..." />
+            <marker date="1384410488000" expanded="true" signature="993:1135" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example/package.bean">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="0" selection-start="166" selection-end="166" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="285">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="17" selection-start="19" selection-end="19" vertical-scroll-proportion="-0.625" vertical-offset="0" max-vertical-offset="630">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/example/example.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="0" selection-start="17" selection-end="17" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6540">
+        <state line="14" column="0" selection-start="219" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6525">
           <folding />
         </state>
       </provider>
@@ -454,38 +472,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/example/main.coffee">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="361" column="0" selection-start="11575" selection-end="11575" vertical-scroll-proportion="0.0" vertical-offset="5130" max-vertical-offset="6075">
+        <state line="200" column="7" selection-start="5890" selection-end="5890" vertical-scroll-proportion="0.0" vertical-offset="5559" max-vertical-offset="6075">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/package.bean">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="166" selection-end="166" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="285">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/test.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="870">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="302" selection-end="302" vertical-scroll-proportion="-3.75" vertical-offset="0" max-vertical-offset="1200">
-          <folding>
-            <marker date="1384410488000" expanded="true" signature="314:859" placeholder="..." />
-            <marker date="1384410488000" expanded="true" signature="993:1135" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="435">
+        <state line="228" column="0" selection-start="8857" selection-end="8857" vertical-scroll-proportion="1.1034483" vertical-offset="2940" max-vertical-offset="3555">
           <folding />
         </state>
       </provider>
