@@ -2,6 +2,8 @@
 
 $ = require 'jquery'
 Runtime = require 'covalent'
+require 'jquery.address'
+require 'jquery.form'
 
 class ContextStack
   constructor: (context) ->
@@ -199,6 +201,19 @@ class Account extends Runtime.ObjectProxy
 
 
 window.runtime = runtime = new Runtime($)
+
+
+runtime.app.get '/', (req) ->
+  console.log "path: /", req
+
+runtime.app.get '/test', (req) ->
+  console.log "path", req.url, req
+
+runtime.app.get '/test2', (req) ->
+  console.log "path", req.url, req
+
+runtime.app.get '/test3', (req) ->
+  console.log "path", req.url, req
 
 test = (stmt) ->
   exp = runtime.parse(stmt)

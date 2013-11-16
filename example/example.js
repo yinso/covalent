@@ -2,16 +2,28 @@ require.config({
   "paths": {
     "jquery": "../lib/jquery",
     "covalent": "../lib/covalent",
-    "builtin": "../lib/builtin"
+    "builtin": "../lib/builtin",
+    "jquery.address": "../lib/jquery.address",
+    "jquery.form": "../lib/jquery.form"
   },
   "shim": {
     "jquery": {
       "deps": [],
       "exports": "jQuery"
+    },
+    "jquery.address": {
+      "deps": [
+        "jquery"
+      ]
+    },
+    "jquery.form": {
+      "deps": [
+        "jquery"
+      ]
     }
   }
 });
-define(['require','builtin','jquery','covalent'], function(require) {
+define(['require','builtin','jquery','covalent','jquery.address','jquery.form'], function(require) {
 
 // main
 var ___MAIN___ = (function(module) {
@@ -26,6 +38,10 @@ var ___MAIN___ = (function(module) {
   $ = require('jquery');
 
   Runtime = require('covalent');
+
+  require('jquery.address');
+
+  require('jquery.form');
 
   ContextStack = (function() {
 
@@ -221,6 +237,22 @@ var ___MAIN___ = (function(module) {
   })(Runtime.ObjectProxy);
 
   window.runtime = runtime = new Runtime($);
+
+  runtime.app.get('/', function(req) {
+    return console.log("path: /", req);
+  });
+
+  runtime.app.get('/test', function(req) {
+    return console.log("path", req.url, req);
+  });
+
+  runtime.app.get('/test2', function(req) {
+    return console.log("path", req.url, req);
+  });
+
+  runtime.app.get('/test3', function(req) {
+    return console.log("path", req.url, req);
+  });
 
   test = function(stmt) {
     var anfRes, cpsExp, exp, func, source;

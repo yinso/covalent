@@ -2,7 +2,7 @@
   "author": "YC <yinso.chen@gmail.com>",
   "name": "covalent",
   "description": "A two-way data-binding template system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "git@github.com:yinso/covalent.git"

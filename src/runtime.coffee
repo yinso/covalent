@@ -3,6 +3,7 @@ Compiler = require './compiler'
 TemplateManager = require './template'
 WidgetFactory = require './widget'
 ObjectProxy = require './object'
+Route = require './route'
 
 builtIn = {}
 
@@ -43,15 +44,41 @@ class Runtime
     @factory = new TemplateManager @
     @context = new ObjectProxy(data)
     @env = builtIn # this is the environment to be used for compilation!
+    @app = new Route @
   compile: (stmt) ->
     @compiler.compile stmt, @ # pass oneself in...
   parse: (stmt) ->
     @compiler.parse stmt
   loadTemplates: () ->
     @factory.load()
+    @app.initialize()
   renderView: (element, tplName, context = @context.getProxy('.')) ->
     @factory.setView element, tplName, context
   initializeView: (element) ->
     @factory.initializeView element
+  # object proxy helpers
+  # get/set/push
+  get: (path) ->
+    @context.get path
+  set: (path, val) ->
+    @context.set path, val
+  push: (path, args) ->
+    @context.push path, args
+  pop: (path) ->
+    @context.pop path
+  shift: (path) ->
+    @context.shift path
+  unshift: (path, args) ->
+    @context.unshift path, args
+  splice: (path, index, removeCount, inserted) ->
+    @context.splice path, index, removeCount, inserted
+  routeGet: (path, callback) ->
+    @app.get path, callback
+  routePOST: (path, callback) ->
+    @app.post path, callback
+  getJSON: (url, data, cb) ->
+    @app.getJSON url, data, cb
+  postJSON: (url, data, cb) ->
+    @app.postJSON url, data, cb
 
 module.exports = Runtime

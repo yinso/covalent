@@ -23,7 +23,14 @@
     </script>
 </head>
 <body>
-    <div id="test"></div>
+    <div id="test">
+        <ul>
+            <li><a href="/test">Test</a></li><!-- should be converted to #/test -->
+            <li><a href="/test2">Test 2</a></li>
+            <li><a href="/test3">Test 3</a></li>
+        </ul>
+
+    </div>
 
     <div>
         <p class='current-rating'>current rating: <strong data-bind="@text: $rating"></strong></p>

@@ -3,18 +3,32 @@
     "main": "./main.coffee",
     "skip": [
       "jquery",
-      "coffee-script"
+      "coffee-script",
+      "jquery.address",
+      "jquery.form"
     ],
     "requireJS": {
       "paths": {
         "jquery": "../lib/jquery",
         "covalent": "../lib/covalent",
-        "builtin": "../lib/builtin"
+        "builtin": "../lib/builtin",
+        "jquery.address": "../lib/jquery.address",
+        "jquery.form": "../lib/jquery.form"
       },
       "shim": {
         "jquery": {
           "deps": [],
           "exports": "jQuery"
+        },
+        "jquery.address": {
+          "deps": [
+            "jquery"
+          ]
+        },
+        "jquery.form": {
+          "deps": [
+            "jquery"
+          ]
         }
       }
     }

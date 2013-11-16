@@ -1,13 +1,19 @@
 amdee:
   main: './main.coffee'
-  skip: ['jquery', 'coffee-script']
+  skip: ['jquery', 'coffee-script', 'jquery.address', 'jquery.form']
   requireJS:
     paths:
       #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'
       jquery: '../lib/jquery'
       covalent: '../lib/covalent'
       builtin: '../lib/builtin'
+      'jquery.address': '../lib/jquery.address'
+      'jquery.form': '../lib/jquery.form'
     shim:
       jquery:
         deps: []
         exports: 'jQuery'
+      'jquery.address':
+        deps: ['jquery']
+      'jquery.form':
+        deps: ['jquery']
