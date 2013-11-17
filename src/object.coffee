@@ -7,7 +7,7 @@
 # Alias -> emit -> inner -> emit -> ... not the right idea.
 # these things don't retain their original value -> the only thing that'll change
 # is the prefix! prefect!
-class ProxyAlias extends EventEmitter
+class ProxyPath extends EventEmitter
   constructor: (@inner, @prefix) ->
   _normalizePath: (path) ->
     if @prefix == ''
@@ -42,10 +42,17 @@ class ProxyAlias extends EventEmitter
 class ProxyMap
   constructor: (@root) ->
     @proxies = {}
+    @aliases = {} # or what we do is this - when we do set alias - we just point the alias toward
     @root.on 'set', @_callSet
     @root.on 'delete', @_callDelete
     @root.on 'splice', @_callSplice
     @root.on 'move', @_callMove
+  normalizePath: (path) ->
+    for key, val of @aliases
+      #console.log 'ProxyMap.normalizePath', path, key, val, path.indexOf(key)
+      if path.indexOf(key) == 0 # it's a sub part of the alias.
+        return val + path.substring(key.length)
+    path
   hasProxy: (path) ->
     if @proxies.hasOwnProperty(path)
       @proxies[path]
@@ -60,15 +67,48 @@ class ProxyMap
     else
       proxy
   addProxy: (path) ->
-    proxy = new ProxyAlias @root, path
-    @proxies[proxy.prefix] = proxy
+    normalized = @normalizePath(path)
+    #console.log 'ProxyMap.addProxy', path, normalized, @aliases
+    proxy = new ProxyPath @root, normalized
+    # how do we ensure that the proxy will be the correct version of path?
+    @proxies[path] = proxy
     proxy
   setAlias: (path, path2) ->
-    # will this work appropriately?
-    # i.e. what happens when we set the path value?
+    keysHelper = (oldData, newData) ->
+      result = {}
+      for key, val of oldData
+        if oldData.hasOwnProperty(key)
+          result[key] = key
+      for key, val of newData
+        if newData.hasOwnProperty(key)
+          result[key] = key
+      result
     proxy = @getProxy path
+    oldData = @root.get path
+    data = @root.get path2
+    # what do we want to do here in terms of emitting?
+    # let's think through... when we are setting the value to the new path... the old path didn't change
+    # so we need to just emit to the new path.
+    @root.emit 'set', {type: 'set', path: path, oldVal: oldData, newVal: data}
     proxy.prefix = path2
+    @aliases[path] = path2
+    @_recurSetAlias proxy, path, path2, keysHelper(oldData, data)
     proxy
+  _recurSetAlias: (proxy, path, path2, oldData) ->
+    # is OLD Data the way to *map* the aliases?
+    # the truth is that there are probably other aliases that are part of the key... hmm...
+    # how do we deal with it?
+    # we don't want to iterate through everything under the sun... this is fine for now.
+    console.log '_recurSetAlias', path, path2, oldData
+    if oldData instanceof Object
+      for key, val of oldData
+        oldPath = "#{path}.#{key}"
+        newPath = "#{path2}.#{key}"
+        proxy = @hasProxy oldPath
+        console.log '_recurSetAliasInner', proxy, oldPath, newPath
+        if proxy
+          proxy.prefix = newPath
+          @_recurSetAlias oldPath, newPath, val
   _inLeft: (current, val) ->
     result = {}
     for k, v of current
@@ -87,6 +127,10 @@ class ProxyMap
     proxy = @hasProxy(evt.path) # without this it means no binding.
     if proxy
       @_recurseSet proxy, evt
+    # time to check to see if we have proxy binding...
+    for key, val of @aliases
+      if evt.path.indexOf(val) == 0 # this is also a new path.
+        @_callSet {type: evt.type, path: "#{key}#{evt.path.substring(val.length)}", oldVal: evt.oldVal, newVal: evt.newVal}
   _recurseSet: (proxy, evt) ->
     {path, oldVal, newVal} = evt
     if (oldVal instanceof Object) and (newVal instanceof Object) # this requires us to figure out the differences.
@@ -116,6 +160,9 @@ class ProxyMap
     proxy = @hasProxy(evt.path)
     if proxy
       @_recurseDelete proxy, evt
+    for key, val of @aliases
+      if evt.path.indexOf(val) == 0 # this is also a new path.
+        @_callDelete {type: evt.type, path: "#{key}#{evt.path.substring(val.length)}", oldVal: evt.oldVal}
   _recurseDelete: (proxy, evt) ->
     @_recurseDeleteInner proxy, evt
     #console.log 'ObjectProxy.recurseDelete', evt
@@ -131,33 +178,39 @@ class ProxyMap
           if inner
             @_recurseDelete inner, {type: 'delete', path: innerPath, oldVal: val}
   _callSplice: (evt) =>
-    #console.log 'ObjectProxy.splice', evt
+    console.log 'ObjectProxy.splice', evt
     proxy = @hasProxy(evt.path)
     if proxy
       proxy.emit 'splice', evt
+    for key, val of @aliases
+      if evt.path.indexOf(val) == 0 # this is also a new path.
+        @_callSplice {type: evt.type, path: "#{key}#{evt.path.substring(val.length)}", index: evt.index, removed: evt.removed, inserted: evt.inserted}
   _callMove: (evt) =>
-    #console.log 'ObjectProxy.move', evt
     proxy = @hasProxy(evt.path) # this is the original evt.
     if proxy
-      # get the new proxy => this would now be required.
       toProxy = @getProxy(evt.toPath)
       evt.toProxy = toProxy
       proxy.emit 'move', evt
-
+    for key, val of @aliases
+      if evt.path.indexOf(val) == 0 # this is also a new path.
+        newPath = "#{key}#{evt.path.substring(val.length)}"
+        newToPath = "#{key}#{evt.toPath.substring(val.length)}"
+        toProxy = @getProxy(newToPath)
+        @_callMove {type: evt.type, path: newPath, toPath: newToPath, toProxy: toProxy}
 
 # ObjectProxy
 class ObjectProxy extends EventEmitter
   constructor: (@data) ->
     @map = new ProxyMap @
   _path: (path) ->
+    #path = @map.normalizePath(path)
     path.split('.')
   _pathWithKey: (path) ->
     segs = @_path path
     key = segs.pop()
     [ segs, key ]
-  get: (path) ->
-    # split the path object...
-    @_get @_path(path), @data
+  get: (path, normalized = @map.normalizePath(path)) ->
+    @_get @_path(normalized), @data
   getProxy: (path) ->
     @map.getProxy path
   hasProxy: (path) ->
@@ -172,10 +225,11 @@ class ObjectProxy extends EventEmitter
         return undefined
     current
   set: (path, val) ->
-    [ segs , key ] = @_pathWithKey path
+    normalized = @map.normalizePath(path)
+    [ segs , key ] = @_pathWithKey normalized
     current = @_get segs, @data
     if current instanceof Object
-      @_set path, current, key, val
+      @_set normalized, current, key, val
     else # we cannot SET the key.
       throw new Error("ObjectProxy.set:not_an_object: #{path}")
   _set: (path, current, key, val) ->
@@ -183,11 +237,14 @@ class ObjectProxy extends EventEmitter
     current[key] = val
     @emit 'set', {type: 'set', path: path, oldVal: oldVal, newVal: val}
   splice: (path, index, removeCount, inserted) ->
-    ary = @get path
+    console.log 'splice', path, index, removeCount, inserted
+    normalized = @map.normalizePath(path)
+    ary = @get path, normalized
     if not (ary instanceof Array)
       throw new Error("ObjectProxy.splice:not_an_array: #{path}")
-    @_splice ary, path, index, removeCount, inserted
+    @_splice ary, normalized, index, removeCount, inserted
   _splice: (ary, path, index, removeCount, inserted) ->
+    console.log '_splice', path, index, removeCount, inserted
     shiftStart = index + removeCount
     changed = []
     # for shifting
@@ -242,19 +299,21 @@ class ObjectProxy extends EventEmitter
           path: "#{path}.#{i}"
           oldVal: undefined
           newVal: inserted[i - index]
-
     removed = ary.splice index, removeCount, inserted...
     for evt in changed
+      console.log 'splice_change', evt
       @emit evt.type, evt
     @emit 'splice', {type: 'splice', path: path, index: index, removed: removed, inserted: inserted}
   push: (path, inserted, evt) ->
     if not (inserted instanceof Array)
       throw new Error("ObjectProxy.push:not_an_array")
-    ary = @get path
-    @_splice ary, path, ary.length, 0, inserted, evt
+    normalized = @map.normalizePath(path)
+    ary = @get path, normalized
+    @_splice ary, normalized, ary.length, 0, inserted, evt
   pop: (path, evt) ->
-    ary = @get path
-    @_splice ary, path, ary.length - 1, 1, [], evt
+    normalized = @map.normalizePath(path)
+    ary = @get path, normalized
+    @_splice ary, normalized, ary.length - 1, 1, [], evt
   shift: (path, evt) ->
     @splice path, 0, 1, [], evt
   unshift: (path, inserted, evt) ->
@@ -265,12 +324,13 @@ class ObjectProxy extends EventEmitter
     @map.setAlias path, path2
     @getProxy path
   delete: (path) ->
-    [ segs, key] = @_pathWithKey path
+    normalized = @map.normalizePath(path)
+    [ segs, key] = @_pathWithKey normalized
     parent = @_get segs, @data
     if parent instanceof Object
-      @_delete path, parent, key
+      @_delete normalized, parent, key
     else
-      throw new Error("ObjectProxy.delete:not_an_object: #{path}")
+      throw new Error("ObjectProxy.delete:not_an_object: #{normalized}")
   _delete: (path, parent, key) ->
     oldVal = parent[key]
     delete parent[key]

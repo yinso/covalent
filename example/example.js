@@ -28,7 +28,7 @@ define(['require','builtin','jquery','covalent','jquery.address','jquery.form'],
 // main
 var ___MAIN___ = (function(module) {
   (function() {
-  var $, Account, AppNetLoader, ContextStack, EventEmitter, Request, Runtime, mockLoggedIn, runtime, test, testData, throttleAsync,
+  var $, Account, AppNetLoader, ContextStack, EventEmitter, Request, Runtime, mockLoggedIn, runtime, testData, throttleAsync,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -242,32 +242,13 @@ var ___MAIN___ = (function(module) {
     return console.log("path: /", req);
   });
 
+  runtime.app.get('/:project', function(req) {
+    return console.log("pathProject", req.url, req);
+  });
+
   runtime.app.get('/test', function(req) {
     return console.log("path", req.url, req);
   });
-
-  runtime.app.get('/test2', function(req) {
-    return console.log("path", req.url, req);
-  });
-
-  runtime.app.get('/test3', function(req) {
-    return console.log("path", req.url, req);
-  });
-
-  test = function(stmt) {
-    var anfRes, cpsExp, exp, func, source;
-    exp = runtime.parse(stmt);
-    anfRes = runtime.compiler.expToANF(exp);
-    cpsExp = runtime.compiler.anfToCPS(anfRes);
-    source = runtime.compiler.cpsToSource(cpsExp);
-    func = runtime.compiler.compileExp(exp);
-    console.log('*********************** TEST');
-    console.log('   STMT', stmt);
-    console.log('    EXP', JSON.stringify(exp, null, 2));
-    console.log('    ANF', JSON.stringify(anfRes, null, 2));
-    console.log('    CPS', JSON.stringify(cpsExp, null, 2));
-    return console.log('COMPILE', func);
-  };
 
   
 
@@ -413,6 +394,21 @@ var ___MAIN___ = (function(module) {
       } else {
         console.log('/user/login:success', res);
         runtime.context.set('accountHome', res.accountHome);
+        runtime.context.set('account1', {
+          id: 'test-id',
+          name: 'test',
+          ownerID: 'test-id'
+        });
+        runtime.context.setAlias('test', 'accountHome');
+        runtime.context.getProxy('test.id').on('set', function(evt) {
+          return console.log('test.id.set', evt);
+        });
+        runtime.context.getProxy('accountHome.id').on('set', function(evt) {
+          return console.log('accountHome.id.set', evt);
+        });
+        runtime.context.getProxy('account1.id').on('set', function(evt) {
+          return console.log('account1.id.set', evt);
+        });
         runtime.context.set('projects', res.projects);
         runtime.context.set('foo', [
           {

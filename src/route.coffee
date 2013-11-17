@@ -160,7 +160,7 @@ class Route
       rhs = route.params[i]
       lhsType = @paramType lhs
       rhsType = @paramType rhs
-      if not lhsType == rhsType
+      if lhsType != rhsType
         if lhsType == 'string' # literal is stronger binding.
           return -1
         else

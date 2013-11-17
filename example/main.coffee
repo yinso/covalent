@@ -199,22 +199,18 @@ class Account extends Runtime.ObjectProxy
     @get 'currentProject'
 
 
-
 window.runtime = runtime = new Runtime($)
-
 
 runtime.app.get '/', (req) ->
   console.log "path: /", req
 
+runtime.app.get '/:project', (req) ->
+  console.log "pathProject", req.url, req
+
 runtime.app.get '/test', (req) ->
   console.log "path", req.url, req
 
-runtime.app.get '/test2', (req) ->
-  console.log "path", req.url, req
-
-runtime.app.get '/test3', (req) ->
-  console.log "path", req.url, req
-
+###
 test = (stmt) ->
   exp = runtime.parse(stmt)
   anfRes = runtime.compiler.expToANF(exp)
@@ -228,7 +224,6 @@ test = (stmt) ->
   console.log '    CPS', JSON.stringify(cpsExp, null, 2)
   #console.log 'COMPILE', source
   console.log 'COMPILE', func
-###
 test '1'
 test '1 + 1'
 test '1 * (2 + 1)'
@@ -385,6 +380,11 @@ $  ->
     else
       console.log '/user/login:success', res
       runtime.context.set 'accountHome', res.accountHome
+      runtime.context.set 'account1', {id: 'test-id', name: 'test', ownerID: 'test-id'}
+      runtime.context.setAlias 'test', 'accountHome'
+      runtime.context.getProxy('test.id').on 'set', (evt) -> console.log 'test.id.set', evt
+      runtime.context.getProxy('accountHome.id').on 'set', (evt) -> console.log 'accountHome.id.set', evt
+      runtime.context.getProxy('account1.id').on 'set', (evt) -> console.log 'account1.id.set', evt
       runtime.context.set 'projects', res.projects
       runtime.context.set 'foo', [
           {item: 'foo'}
