@@ -26,7 +26,7 @@
       <file leaf-file-name="main.coffee" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/main.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="386" column="0" selection-start="12457" selection-end="12457" vertical-scroll-proportion="0.0" vertical-offset="5673" max-vertical-offset="6300">
+            <state line="121" column="0" selection-start="1927" selection-end="3360" vertical-scroll-proportion="0.0" vertical-offset="1443" max-vertical-offset="6300">
               <folding />
             </state>
           </provider>
@@ -44,28 +44,64 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Makefile" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Makefile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="48" column="0" selection-start="1483" selection-end="1483" vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="1200">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kvs.coffee" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/kvs.coffee">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="0" selection-start="27" selection-end="27" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1050">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="object.coffee" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/object.coffee">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="166" column="0" selection-start="4517" selection-end="4517" vertical-scroll-proportion="0.0" vertical-offset="2050" max-vertical-offset="2595">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="package.bean" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.bean">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="13" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+            <state line="19" column="19" selection-start="431" selection-end="431" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="465">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="package.json" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/package.json">
+      <file leaf-file-name="object.coffee" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/object.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="17" selection-start="19" selection-end="19" vertical-scroll-proportion="-0.625" vertical-offset="0" max-vertical-offset="540">
+            <state line="90" column="46" selection-start="3031" selection-end="3031" vertical-scroll-proportion="-3.3846154" vertical-offset="1262" max-vertical-offset="5175">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runtime.coffee" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/runtime.coffee">
+      <file leaf-file-name="compiler.coffee" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/compiler.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="81" column="17" selection-start="2513" selection-end="2513" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1335">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="parser.coffee" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test/parser.coffee">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="0" selection-start="1" selection-end="1" vertical-scroll-proportion="0.032467533" vertical-offset="0" max-vertical-offset="855">
               <folding />
             </state>
           </provider>
@@ -74,52 +110,11 @@
       <file leaf-file-name="test.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="48" selection-start="1458" selection-end="1458" vertical-scroll-proportion="-3.125" vertical-offset="345" max-vertical-offset="1305">
+            <state line="28" column="48" selection-start="1458" selection-end="1458" vertical-scroll-proportion="-17.5" vertical-offset="0" max-vertical-offset="1305">
               <folding>
                 <element signature="n#style#0;n#ul#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <marker date="1384564584000" expanded="true" signature="314:859" placeholder="..." />
                 <marker date="1384564584000" expanded="true" signature="993:1135" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="route.coffee" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/route.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="162" column="18" selection-start="4506" selection-end="4506" vertical-scroll-proportion="0.0" vertical-offset="2295" max-vertical-offset="6090">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="object.coffee" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/object.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="321" column="0" selection-start="12471" selection-end="12471" vertical-scroll-proportion="0.93318486" vertical-offset="4396" max-vertical-offset="5175">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kvs.coffee" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/kvs.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="45" selection-start="178" selection-end="178" vertical-scroll-proportion="0.0" vertical-offset="2311" max-vertical-offset="2955">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="package.bean" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/example/package.bean">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="452" selection-end="452" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
-              <folding>
-                <marker date="1384564807000" expanded="true" signature="0:546" placeholder="amdee:&#10;  main: './main.coffee'&#10;  skip: ['jquery', 'coffee-script', 'jquery.address', 'jquery.form']&#10;  requireJS:&#10;    paths:&#10;      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'&#10;      jquery: '../lib/jquery'&#10;      covalent: '../lib/covalent'&#10;      builtin: '../lib/builtin'&#10;      'jquery.address': '../lib/jquery.address'&#10;      'jquery.form': '../lib/jquery.form'&#10;    shim:&#10;      jquery:&#10;        deps: []&#10;        exports: 'jQuery'&#10;      'jquery.address':&#10;        deps: ['jquery']&#10;      'jquery.form':&#10;        deps: ['jquery']..." />
-                <marker date="1384564807000" expanded="true" signature="9:546" placeholder="main: './main.coffee'..." />
-                <marker date="1384564807000" expanded="true" signature="117:546" placeholder="paths:&#10;      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'&#10;      jquery: '../lib/jquery'&#10;      covalent: '../lib/covalent'&#10;      builtin: '../lib/builtin'&#10;      'jquery.address': '../lib/jquery.address'&#10;      'jquery.form': '../lib/jquery.form'..." />
-                <marker date="1384564807000" expanded="true" signature="401:546" placeholder="jquery:&#10;        deps: []&#10;        exports: 'jQuery'..." />
               </folding>
             </state>
           </provider>
@@ -135,22 +130,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/template.coffee" />
-        <option value="$PROJECT_DIR$/src/compiler.coffee" />
-        <option value="$PROJECT_DIR$/make.coffee" />
-        <option value="$PROJECT_DIR$/lib/builtin.js" />
-        <option value="$PROJECT_DIR$/src/main.coffee" />
-        <option value="$PROJECT_DIR$/Makefile" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/each.coffee" />
         <option value="$PROJECT_DIR$/src/kvs.coffee" />
         <option value="$PROJECT_DIR$/example/test.html" />
         <option value="$PROJECT_DIR$/example/package.bean" />
         <option value="$PROJECT_DIR$/src/runtime.coffee" />
-        <option value="$PROJECT_DIR$/package.bean" />
         <option value="$PROJECT_DIR$/src/route.coffee" />
         <option value="$PROJECT_DIR$/example/main.coffee" />
+        <option value="$PROJECT_DIR$/src/test.coffee" />
+        <option value="$PROJECT_DIR$/.target/test.html" />
+        <option value="$PROJECT_DIR$/Makefile" />
+        <option value="$PROJECT_DIR$/test/kvs.coffee" />
         <option value="$PROJECT_DIR$/src/object.coffee" />
+        <option value="$PROJECT_DIR$/package.bean" />
+        <option value="$PROJECT_DIR$/test/object.coffee" />
+        <option value="$PROJECT_DIR$/test/compiler.coffee" />
+        <option value="$PROJECT_DIR$/test/parser.coffee" />
       </list>
     </option>
   </component>
@@ -261,6 +256,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="covalent" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="covalent" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value=".target" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -268,6 +277,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../testlet" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="FullScreen" value="false" />
   </component>
@@ -382,53 +392,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/builtin.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="30150">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="0" selection-start="1068" selection-end="1069" vertical-scroll-proportion="0.0" vertical-offset="274" max-vertical-offset="1185">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/covalent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="147450">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/test.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="870">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/example.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="0" selection-start="219" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="6525">
-          <folding>
-            <marker date="1384654868000" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1384654868000" expanded="true" signature="-1:-1" placeholder="{&quot;jquery&quot;: &quot;../lib/jquery&quot;...}" />
-            <marker date="1384654868000" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1384654868000" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/each.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="19" selection-start="3414" selection-end="3414" vertical-scroll-proportion="0.0" vertical-offset="1083" max-vertical-offset="2085">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/kvs.coffee">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="45" selection-start="178" selection-end="178" vertical-scroll-proportion="0.0" vertical-offset="2311" max-vertical-offset="2955">
@@ -436,25 +399,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="48" selection-start="1458" selection-end="1458" vertical-scroll-proportion="-3.125" vertical-offset="345" max-vertical-offset="1305">
-          <folding>
-            <element signature="n#style#0;n#ul#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <marker date="1384564584000" expanded="true" signature="314:859" placeholder="..." />
-            <marker date="1384564584000" expanded="true" signature="993:1135" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/example/package.bean">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="0" selection-start="452" selection-end="452" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
           <folding>
-            <marker date="1384564807000" expanded="true" signature="0:546" placeholder="amdee:&#10;  main: './main.coffee'&#10;  skip: ['jquery', 'coffee-script', 'jquery.address', 'jquery.form']&#10;  requireJS:&#10;    paths:&#10;      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'&#10;      jquery: '../lib/jquery'&#10;      covalent: '../lib/covalent'&#10;      builtin: '../lib/builtin'&#10;      'jquery.address': '../lib/jquery.address'&#10;      'jquery.form': '../lib/jquery.form'&#10;    shim:&#10;      jquery:&#10;        deps: []&#10;        exports: 'jQuery'&#10;      'jquery.address':&#10;        deps: ['jquery']&#10;      'jquery.form':&#10;        deps: ['jquery']..." />
-            <marker date="1384564807000" expanded="true" signature="9:546" placeholder="main: './main.coffee'..." />
-            <marker date="1384564807000" expanded="true" signature="117:546" placeholder="paths:&#10;      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'&#10;      jquery: '../lib/jquery'&#10;      covalent: '../lib/covalent'&#10;      builtin: '../lib/builtin'&#10;      'jquery.address': '../lib/jquery.address'&#10;      'jquery.form': '../lib/jquery.form'..." />
-            <marker date="1384564807000" expanded="true" signature="401:546" placeholder="jquery:&#10;        deps: []&#10;        exports: 'jQuery'..." />
+            <marker date="1384564807000" expanded="true" signature="-1:-1" placeholder="amdee:&#10;  main: './main.coffee'&#10;  skip: ['jquery', 'coffee-script', 'jquery.address', 'jquery.form']&#10;  requireJS:&#10;    paths:&#10;      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'&#10;      jquery: '../lib/jquery'&#10;      covalent: '../lib/covalent'&#10;      builtin: '../lib/builtin'&#10;      'jquery.address': '../lib/jquery.address'&#10;      'jquery.form': '../lib/jquery.form'&#10;    shim:&#10;      jquery:&#10;        deps: []&#10;        exports: 'jQuery'&#10;      'jquery.address':&#10;        deps: ['jquery']&#10;      'jquery.form':&#10;        deps: ['jquery']..." />
+            <marker date="1384564807000" expanded="true" signature="-1:-1" placeholder="main: './main.coffee'..." />
+            <marker date="1384564807000" expanded="true" signature="-1:-1" placeholder="paths:&#10;      #jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery'&#10;      jquery: '../lib/jquery'&#10;      covalent: '../lib/covalent'&#10;      builtin: '../lib/builtin'&#10;      'jquery.address': '../lib/jquery.address'&#10;      'jquery.form': '../lib/jquery.form'..." />
+            <marker date="1384564807000" expanded="true" signature="-1:-1" placeholder="jquery:&#10;        deps: []&#10;        exports: 'jQuery'..." />
           </folding>
         </state>
       </provider>
@@ -480,13 +432,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.bean">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="13" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state line="228" column="0" selection-start="8857" selection-end="8857" vertical-scroll-proportion="-17.777779" vertical-offset="2940" max-vertical-offset="3555">
@@ -497,16 +442,78 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/require.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="29805">
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example/test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="48" selection-start="1458" selection-end="1458" vertical-scroll-proportion="-17.5" vertical-offset="0" max-vertical-offset="1305">
+          <folding>
+            <element signature="n#style#0;n#ul#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <marker date="1384564584000" expanded="true" signature="314:859" placeholder="..." />
+            <marker date="1384564584000" expanded="true" signature="993:1135" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="0" selection-start="1483" selection-end="1483" vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="1200">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/example/main.coffee">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="386" column="0" selection-start="12457" selection-end="12457" vertical-scroll-proportion="0.0" vertical-offset="5673" max-vertical-offset="6300">
+        <state line="121" column="0" selection-start="1927" selection-end="3360" vertical-scroll-proportion="0.0" vertical-offset="1443" max-vertical-offset="6300">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/kvs.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="0" selection-start="27" selection-end="27" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1050">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/object.coffee">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="321" column="0" selection-start="12471" selection-end="12471" vertical-scroll-proportion="0.93318486" vertical-offset="4396" max-vertical-offset="5175">
+        <state line="90" column="46" selection-start="3031" selection-end="3031" vertical-scroll-proportion="-3.3846154" vertical-offset="1262" max-vertical-offset="5175">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.bean">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="19" selection-start="431" selection-end="431" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="465">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/object.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="166" column="0" selection-start="4517" selection-end="4517" vertical-scroll-proportion="0.0" vertical-offset="2050" max-vertical-offset="2595">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/compiler.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="485">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/parser.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="0" selection-start="1" selection-end="1" vertical-scroll-proportion="0.032467533" vertical-offset="0" max-vertical-offset="855">
           <folding />
         </state>
       </provider>

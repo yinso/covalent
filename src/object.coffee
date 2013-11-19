@@ -125,48 +125,49 @@ class ProxyMap
   _callSet: (evt) =>
     #console.log 'ObjectProxy.set', evt
     proxy = @hasProxy(evt.path) # without this it means no binding.
-    if proxy
-      @_recurseSet proxy, evt
+    @_recurseSet proxy, evt
     # time to check to see if we have proxy binding...
     for key, val of @aliases
       if evt.path.indexOf(val) == 0 # this is also a new path.
         @_callSet {type: evt.type, path: "#{key}#{evt.path.substring(val.length)}", oldVal: evt.oldVal, newVal: evt.newVal}
   _recurseSet: (proxy, evt) ->
     {path, oldVal, newVal} = evt
+    #console.log '_recurSet:oldVal', oldVal, oldVal instanceof Object
+    #console.log '_recurSet:newVal', newVal, newVal instanceof Object
     if (oldVal instanceof Object) and (newVal instanceof Object) # this requires us to figure out the differences.
       removed = @_inLeft oldVal, newVal
       inserted = @_inLeft newVal, oldVal
       [ left , right ] = @_modified oldVal, newVal, {}, inserted
       @_recurseDeleteInner proxy, {type: 'delete', path: path, oldVal: removed}
       @_recurseSetInner proxy, {type: 'set', path: path, oldVal: left, newVal: right}
-    else if not (oldVal instanceof Object) # this is just recurseSet of the inner values.
+    else if not (oldVal instanceof Object) and (newVal instanceof Object)
       @_recurseSetInner proxy, {type: 'set', path: path, oldVal: {}, newVal: newVal}
-    else if not (newVal instanceof Object) # just recurseDelete the inner objects.
+    else if not (newVal instanceof Object) and (oldVal instanceof Object)
       @_recurseDeleteInner proxy, {type: 'delete', path: path, oldVal: oldVal}
     else # neither is an object - we will do nothing.
       null
-    #console.log 'ObjectProxy.recurseSet', evt
-    proxy.emit 'set', evt
+    if proxy
+      proxy.emit 'set', evt
   _recurseSetInner: (proxy, evt) ->
     {path, oldVal, newVal} = evt
+    #console.log 'ObjectProxy.recurseSetInner', evt, newVal, newVal instanceof Object
     for key, val of newVal
       if newVal.hasOwnProperty(key)
         innerPath = "#{path}.#{key}"
         innerProxy = @hasProxy innerPath # not creating new proxy if it doesn't exist.
-        if innerProxy
-          @_recurseSet innerProxy, {type: 'set', path: innerPath, oldVal: oldVal[key], newVal: val}
+        @_recurseSet innerProxy, {type: 'set', path: innerPath, oldVal: oldVal[key], newVal: val}
   _callDelete: (evt) =>
     #console.log 'ObjectProxy.delete', evt
     proxy = @hasProxy(evt.path)
-    if proxy
-      @_recurseDelete proxy, evt
+    @_recurseDelete proxy, evt
     for key, val of @aliases
       if evt.path.indexOf(val) == 0 # this is also a new path.
         @_callDelete {type: evt.type, path: "#{key}#{evt.path.substring(val.length)}", oldVal: evt.oldVal}
   _recurseDelete: (proxy, evt) ->
     @_recurseDeleteInner proxy, evt
     #console.log 'ObjectProxy.recurseDelete', evt
-    proxy.emit 'delete', evt
+    if proxy
+      proxy.emit 'delete', evt
   _recurseDeleteInner: (proxy, evt) ->
     {path, oldVal} = evt
     # based on the path we should get a list of existing availble binding.
@@ -175,8 +176,7 @@ class ProxyMap
         if oldVal.hasOwnProperty(key)
           innerPath = "#{path}.#{key}"
           inner = @hasProxy innerPath
-          if inner
-            @_recurseDelete inner, {type: 'delete', path: innerPath, oldVal: val}
+          @_recurseDelete inner, {type: 'delete', path: innerPath, oldVal: val}
   _callSplice: (evt) =>
     console.log 'ObjectProxy.splice', evt
     proxy = @hasProxy(evt.path)
@@ -237,14 +237,14 @@ class ObjectProxy extends EventEmitter
     current[key] = val
     @emit 'set', {type: 'set', path: path, oldVal: oldVal, newVal: val}
   splice: (path, index, removeCount, inserted) ->
-    console.log 'splice', path, index, removeCount, inserted
+    #console.log 'splice', path, index, removeCount, inserted
     normalized = @map.normalizePath(path)
     ary = @get path, normalized
     if not (ary instanceof Array)
       throw new Error("ObjectProxy.splice:not_an_array: #{path}")
     @_splice ary, normalized, index, removeCount, inserted
   _splice: (ary, path, index, removeCount, inserted) ->
-    console.log '_splice', path, index, removeCount, inserted
+    #console.log '_splice', path, index, removeCount, inserted
     shiftStart = index + removeCount
     changed = []
     # for shifting
@@ -301,7 +301,7 @@ class ObjectProxy extends EventEmitter
           newVal: inserted[i - index]
     removed = ary.splice index, removeCount, inserted...
     for evt in changed
-      console.log 'splice_change', evt
+      #console.log 'splice_change', evt
       @emit evt.type, evt
     @emit 'splice', {type: 'splice', path: path, index: index, removed: removed, inserted: inserted}
   push: (path, inserted, evt) ->

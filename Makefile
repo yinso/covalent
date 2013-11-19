@@ -42,9 +42,10 @@ $(JSONDIR)/%.json: $(BEANDIR)/%.bean
 src/covalent.js: src/covalent.pegjs
 	./node_modules/.bin/pegjs src/covalent.pegjs src/covalent.js
 
+#	#./node_modules/.bin/mocha --ignore-leaks --compilers coffee:coffee-script --reporter spec  -g exec # proxy runtime parse exec compile # for running test cases that matches the name
 .PHONY: test
 test: build
-	./node_modules/.bin/mocha --ignore-leaks --compilers coffee:coffee-script --reporter spec  -g exec # proxy runtime parse exec compile # for running test cases that matches the name
+	./node_modules/.bin/testlet
 
 
 .PHONY: clean
