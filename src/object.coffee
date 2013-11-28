@@ -9,6 +9,7 @@
 # is the prefix! prefect!
 class ProxyPath extends EventEmitter
   constructor: (@inner, @prefix) ->
+    @setMaxListeners 0
   _normalizePath: (path) ->
     if @prefix == ''
       path
@@ -201,6 +202,7 @@ class ProxyMap
 # ObjectProxy
 class ObjectProxy extends EventEmitter
   constructor: (@data) ->
+    @setMaxListeners 0
     @map = new ProxyMap @
   _path: (path) ->
     #path = @map.normalizePath(path)

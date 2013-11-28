@@ -1,7 +1,4 @@
-Parser = require '../src/covalent'
-Document = require '../src/document'
-Selector = Document.Selector
-jQuery = require '../src/coquery'
+mockQuery = require 'mockquery'
 Runtime = require '../src/runtime'
 
 fs = require 'fs'
@@ -168,45 +165,13 @@ testData =
 
 describe 'document test', () ->
   it 'should parse html', (done) ->
-    fs.readFile path.join(__dirname, '../example/test.html'), 'utf8', (err, data) ->
+    mockQuery.readFile path.join(__dirname, '../example/test.html'), (err, jQuery) ->
       if err
         done err
       else
-        try
-          html = data
-          parsed = Parser.parse data
-          done null
-        catch e
-          done e
-
-  it 'should load document', (done) ->
-    try
-      document = new Document parsed, {}
-      done null
-    catch e
-      done e
-
-  it 'should use selector', (done) ->
-    try
-      selector = new Selector '[data-bind]'
-      results = selector.run document
-      #console.log '*****select:[data-bind]****'
-      #for elt in results
-        #console.log 'element', elt.tag, elt.data('bind')
-      selector = new Selector 'body'
-      results = selector.run document
-      #console.log results
-      done null
-    catch e
-      done e
-
-  it 'should use coquery', (done) ->
-    try
-      $ = jQuery(document)
-      console.log $('script[type="text/template"]').html()
-      done null
-    catch e
-      done e
+        $ = jQuery
+        document = $.document
+        done null
 
   it 'should load runtime', (done) ->
     try

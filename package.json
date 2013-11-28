@@ -2,7 +2,7 @@
   "author": "YC <yinso.chen@gmail.com>",
   "name": "covalent",
   "description": "A two-way data-binding template system",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "repository": {
     "type": "git",
     "url": "git@github.com:yinso/covalent.git"
@@ -16,13 +16,12 @@
   },
   "main": "./lib/covalent.js",
   "dependencies": {
-    "coffee-script": "=1.4.0"
+    "coffee-script": "=1.4.0",
+    "mockquery": "~ 0.1.0"
   },
   "devDependencies": {
     "amdee": "~ 0.5.5",
-    "chai": "= 1.4.0",
     "testlet": "~ 0.1.4",
-    "mocha": "= 1.7.3",
     "coffee-bean": "=0.1.0",
     "pegjs": "=0.7.0"
   },

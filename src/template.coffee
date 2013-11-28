@@ -1,13 +1,10 @@
 
 EachTemplate = require './each'
 
-###
-
-
-###
-
 class Template
   @make: (template, runtime, noClone = false) ->
+    if not template
+      throw new Error("Template.make_template_is_nonvalue: #{template}")
     #console.log 'Template.make', template
     element = runtime.$(template)[0]
     view = new @ element, runtime, noClone
