@@ -128,6 +128,19 @@ for binding purposes.
 
 (It also mean you can actually use any other jQuery-compatible libraries; potentially multiple libraries at once!)
 
+### Start the Covalent Runtime on Server Side.
+
+[`MockQuery`](http://github.com/yinso/mockquery) is designed to specifically work with `Covalent` on the server-side
+as a `jQuery` substitute.
+
+    // main.js
+    var mockquery = require('mockquery');
+    var Runtime = require('covalent');
+    var $ = mockquery.readFileSync(<filePath>);
+    var runtime = new Runtime($);
+
+Alternatively, you can use `jsDOM` to accomplish the same purpose. `cheerio` does not currently work.
+
 ### Covalent Templates
 
 Covalent comes with its own template system, along with a data-binding language. Let's quickly take a look what a template
@@ -173,6 +186,33 @@ To proxy any of your data, just proxy it via `runtime.context.set` to a particul
 object needs to be already exist, or the call will error. In other words, if you set it to `this.is.the.dest`, then
 `this.is.the` needs to point to an existing object.
 
+#### Working with Arrays
+
+`runtime.context` specifically provide methods to work with arrays. The method names are the same as regular array methods
+but with a bit of differences.
+
+In the previous example, `runtime.context.get('foo.baz')` is an array.
+
+To push data to `$foo.baz`, use `push` method as follows.
+
+    runtime.context.push(<key>, [ <data1>, <data2>, ...]);
+
+`runtime.context.push` takes an array as the second element, rather than taking a vararg as regular `Array.push`. This is
+because there is a third argument that is meant to pass an event object. This is the same for all mutation methods of
+proxy, including `runtime.context.set`.
+
+The other array mutation methods are
+
+    runtime.context.pop(<key>, <event>); // same as the Array.pop() method
+
+    runtime.context.shift(<key>, <event>); // same as the Array.shift() method
+
+    runtime.context.unshift(<key>, <array_of_objects>, <event>); // same purpose as Array.unshift() method.
+
+    runtime.context.splice(<key>, <index>, <number_of_obj_to_remove>, <array_of_objects_to_insert>, <event>); // same purpose as Array.splice
+
+Each of the mutation methods will generate the appropriate events to trigger the data-bindings.
+
 ### Data-Binding
 
 Okay, the fun part of data binding.
@@ -204,7 +244,6 @@ To set the value, put the dollar-sign expression on the left hand side of an ass
 
     $account.name = 'Covalent'
 
-
 If you want to bind a text field so you can edit the name, you just use the following
 
     <div>Account Name:
@@ -225,6 +264,98 @@ of the element, and `@on` bindings are expressions triggered via the event named
 
 * When `$account.name` (which maps to `runtime.context.get('account.name')`) changes, update the `value` attribute of the element
 * When `keyup` event occurs on the element, assign `$account.name` to `this.value`, which means the value from the `value` attribute of the element
+
+### `Each` Binding and `Template` Binding
+
+To work with generating a list, you can use `@each` binding, as well as the `@template` binding.
+
+    // data
+    runtime.context.set('projectList', [
+      {name: 'project 1', ...} ,
+      {name: 'project 2', ...} ,
+      ...
+    ]);
+
+    // the each binding template
+    <ul data-bind="
+      @each $projectList
+      @template 'projectDetail'
+    "></ul>
+
+    // the projectDetail template
+    <script type="text/template" name="projectDetail">
+    <li data-bind="
+      @text $name
+    "></li>
+    </script>
+
+The appropriate numbers of the `projectDetail` template will be instantiated to match the `projectList` data. As you
+manipulate `projectList` via `push`, `pop`, `shift`, `unshift`, and `splice`, the total number of the `projectDetail`
+template will be adjusted to match the underlying data accordingly.
+
+You can also specify the `projectDetail` template inline. To do so, just put the template inside, and remove the
+`@template` reference.
+
+    // the each binding template with the projectDetail template inline
+    <ul data-bind="
+      @each $projectList
+    ">
+        <li data-bind="
+          @text $name
+        "></li>
+    </ul>
+
+### `Widget` Binding
+
+Although you can use Covalent to cover most of the data binding needs and hence removing the needs for you to write
+custom UI controls, sometimes you'll need to have custom UI controls due to
+
+* there are a lot of 3rd-party UI controls ready-to-use, and you just want to integrate rather than duplicate the code
+* for complex UI logic it can be easier to be done in imperative fashion in JavaScript rather than in declarative fashion
+  in Covalent
+
+The `@widget` binding is designed for this specific scenario.  To use the `@wdiget` control, it looks like the following
+
+    <div data-bind="
+      @widget {
+        appNet: <initialization_data_object>
+      }
+    "></div>
+
+The above code will create an widget of the type `appNet` and pass in the `<initialization_data_object>` to initialize
+the widget.  Within the widget you'll have full lower-level control over the covalent runtime.
+
+A generic widget will look like the following
+
+    function appNet(element, runtime, options) {
+      this.element = element;
+      this.runtime = runtime;
+      this.options = options || {};
+      // do initialization and anything else.
+    }
+
+    appNet.prototype.destroy = function() {
+      // clean up after the app
+    }
+
+    Runtime.registerWidget('appNet', appNet);
+
+The widget constructor expects 3 arguments
+
+* `element` that the widget will be bound to
+* `runtime` that represents the current covalent runtime
+* `options` that represents the options that you pass in from the widget declaration.
+
+Note that you can use proxied value for the `initialization_object`, but it will not be updated upon subsequent
+mutation.
+
+## Routing
+
+Covalent comes with its own routing capability that allows you to create client-side routing. The routing is similar
+to [`ExpressJS`](http://expressjs.com) but due to it being tuned for client-side, it doesn't look exactly the same.
+
+> TODO FIll In Routing
+
 
 
 
