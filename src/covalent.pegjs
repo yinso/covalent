@@ -67,11 +67,11 @@ function leftAssociative (lhs, rest) {
   // let's give it a shot.
   var i = 0;
   var result = lhs;
-  console.log('leftAssociative', JSON.stringify(lhs), JSON.stringify(rest));
+  // console.log('leftAssociative', JSON.stringify(lhs), JSON.stringify(rest));
   for (i = 0; i < rest.length; ++i) {
      var next = rest[i];
      result = {op: next.op, lhs: result, rhs: next.rhs};
-     console.log('leftAssociative', i, JSON.stringify(result));
+     // console.log('leftAssociative', i, JSON.stringify(result));
   }
   return result;
 }
@@ -530,7 +530,7 @@ Literal
 XHTML
 **********************************************************************/
 XHTMLExpression
-  = elt:SingleElementExp __ { return elt; }
+  = elt:SingleElementExp __ { return {element: elt.tag, attributes: elt.attributes, children: elt.children}; }
   / start:OpenElementExp children:ChildXHTMLExpression* close:CloseElementExp {
     if (start.tag == close.tag) {
       return { element: start.tag, attributes: start.attributes, children: children };
@@ -600,11 +600,16 @@ Lexical Elements
 **********************************************************************/
 
 String
-  = '"' chars:chars '"' _ { return chars; }
-  / "'" chars:chars "'" _ { return chars; }
+  = '"' chars:doubleQuoteChar* '"' _ { return chars.join(''); }
+  / "'" chars:singleQuoteChar* "'" _ { return chars.join(''); }
 
-chars
-  = chars:char* { return chars.join(""); }
+singleQuoteChar
+  = '"'
+  / char
+
+doubleQuoteChar
+  = "'"
+  / char
 
 char
   // In the original JSON grammar: "any-Unicode-character-except-"-or-\-or-control-character"

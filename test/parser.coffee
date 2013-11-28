@@ -49,3 +49,12 @@ describe 'parser test', () ->
 
   parseTest '1 <= $id', {op: '<=', lhs: 1, rhs: {cell: 'id'}}
 
+  parseTest "<p data-bind=\"@text: $foo; @each: $stuff, 'stuff'\">test me</p>",
+    element: 'p'
+    attributes:
+      'data-bind': "@text: $foo; @each: $stuff, 'stuff'"
+    children: [
+      'test me'
+    ]
+
+  parseTest "\"hello \'world\"", "hello \'world"

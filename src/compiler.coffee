@@ -356,7 +356,7 @@ class Compiler
     anf = @expToANF(exp)
     cps = @anfToCPS(anf)
     compiled = @cpsToSource(cps, depends)
-    console.log 'Compiler.compileExp', compiled
+    #console.log 'Compiler.compileExp', compiled
     new Function ['cb'], """
         var self = this;
         #{compiled}

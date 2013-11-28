@@ -93,7 +93,7 @@ class TextBinding # value from Proxy to UI
       @bindProxy toProxy
   uponRefresh: (err, res) =>
     if not err
-      if @element instanceof HTMLTitleElement # unfortunately we have to test for title this this way...
+      if typeof(window) != 'undefined' and @element instanceof window.HTMLTitleElement
         @runtime.$(@element.ownerDocument).attr('title', @flattenVal(res))
       else
         @runtime.$(@element).html @flattenVal(res)

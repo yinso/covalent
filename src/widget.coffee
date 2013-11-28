@@ -4,12 +4,12 @@ class WidgetFactory
   @widgets: {}
   @register: (name, widget) ->
     if @widgets.hasOwnProperty(name)
-      throw new Exception error: 'widget_already_defined', value: name
+      throw new Error("widget_already_defined: #{name}")
     else
       @widgets[name] = widget
   constructor: (@context, @element, @prop, @depends, @runtime, @callback) ->
     if not @constructor.widgets.hasOwnProperty(@prop)
-      throw new Exception error: 'unknown_widget_type', value: @prop
+      throw new Error "unknown_widget_type: #{@prop}"
   destroy: () ->
     @widget?.destroy()
     delete @context

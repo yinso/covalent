@@ -71,4 +71,4 @@ watch:
 
 .PHONY: start
 start:	all
-	./node_modules/.bin/supervisor -w routes,views,lib,src,client -e coffee,hbs,js,json -q server.js
+	./node_modules/.bin/supervisor -w routes,views,lib,src,client -e coffee,hbs,js,json -q run.js

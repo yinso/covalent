@@ -265,29 +265,27 @@ class App
       console.log 'Address.change', evt.value
       req = @findRoute 'get', evt.value
       app.runRoute req
-    $ = @$
   setupAnchor: () ->
-    $ = @$
     app = @
     document = @$('body')[0].ownerDocument
     console.log '@setupAnchor', document
-    $(document).on 'click', 'a', (evt) ->
+    @$(document).on 'click', 'a', (evt) =>
       evt.preventDefault()
       console.log 'App.a.clickMe', @host, location.host, @href, @href.match /^javascript/
       if @href == '' or @href.match /^javascript/
         console.log 'App.a.JS', @host, location.host, @href
         return false
       if @host == location.host
-        normalizedURL = app.normalizeURL $(@).attr('href')
-        $.address.value normalizedURL.pathname + normalizedURL.search
+        normalizedURL = app.normalizeURL @$(@).attr('href')
+        @$.address.value normalizedURL.pathname + normalizedURL.search
       else
         popup = window.open @href
       false
-    $(document).on 'submit', 'form', (evt) ->
+    @$(document).on 'submit', 'form', (evt) =>
       evt.preventDefault()
       form = @
       console.log 'jquery.on form', form
-      formTarget = $(form).attr('action')
+      formTarget = @$(form).attr('action')
       req = app.postRoutes.matchID formTarget
       req.method = 'post'
       req.form = form

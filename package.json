@@ -19,9 +19,9 @@
     "coffee-script": "=1.4.0"
   },
   "devDependencies": {
-    "amdee": "~ 0.5.4",
+    "amdee": "~ 0.5.5",
     "chai": "= 1.4.0",
-    "testlet": "~ 0.1.3",
+    "testlet": "~ 0.1.4",
     "mocha": "= 1.7.3",
     "coffee-bean": "=0.1.0",
     "pegjs": "=0.7.0"

@@ -126,7 +126,8 @@ module.exports = (function(){
         "XHTMLCommentClose": parse_XHTMLCommentClose,
         "XHTMLCommentChar": parse_XHTMLCommentChar,
         "String": parse_String,
-        "chars": parse_chars,
+        "singleQuoteChar": parse_singleQuoteChar,
+        "doubleQuoteChar": parse_doubleQuoteChar,
         "char": parse_char,
         "hexDigit4": parse_hexDigit4,
         "Number": parse_Number,
@@ -5659,7 +5660,7 @@ module.exports = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, elt) { return elt; })(pos0, result0[0]);
+          result0 = (function(offset, elt) { return {element: elt.tag, attributes: elt.attributes, children: elt.children}; })(pos0, result0[0]);
         }
         if (result0 === null) {
           pos = pos0;
@@ -6266,7 +6267,12 @@ module.exports = (function(){
           }
         }
         if (result0 !== null) {
-          result1 = parse_chars();
+          result1 = [];
+          result2 = parse_doubleQuoteChar();
+          while (result2 !== null) {
+            result1.push(result2);
+            result2 = parse_doubleQuoteChar();
+          }
           if (result1 !== null) {
             if (input.charCodeAt(pos) === 34) {
               result2 = "\"";
@@ -6298,7 +6304,7 @@ module.exports = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, chars) { return chars; })(pos0, result0[1]);
+          result0 = (function(offset, chars) { return chars.join(''); })(pos0, result0[1]);
         }
         if (result0 === null) {
           pos = pos0;
@@ -6316,7 +6322,12 @@ module.exports = (function(){
             }
           }
           if (result0 !== null) {
-            result1 = parse_chars();
+            result1 = [];
+            result2 = parse_singleQuoteChar();
+            while (result2 !== null) {
+              result1.push(result2);
+              result2 = parse_singleQuoteChar();
+            }
             if (result1 !== null) {
               if (input.charCodeAt(pos) === 39) {
                 result2 = "'";
@@ -6348,7 +6359,7 @@ module.exports = (function(){
             pos = pos1;
           }
           if (result0 !== null) {
-            result0 = (function(offset, chars) { return chars; })(pos0, result0[1]);
+            result0 = (function(offset, chars) { return chars.join(''); })(pos0, result0[1]);
           }
           if (result0 === null) {
             pos = pos0;
@@ -6357,22 +6368,38 @@ module.exports = (function(){
         return result0;
       }
       
-      function parse_chars() {
-        var result0, result1;
-        var pos0;
+      function parse_singleQuoteChar() {
+        var result0;
         
-        pos0 = pos;
-        result0 = [];
-        result1 = parse_char();
-        while (result1 !== null) {
-          result0.push(result1);
-          result1 = parse_char();
-        }
-        if (result0 !== null) {
-          result0 = (function(offset, chars) { return chars.join(""); })(pos0, result0);
+        if (input.charCodeAt(pos) === 34) {
+          result0 = "\"";
+          pos++;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"\\\"\"");
+          }
         }
         if (result0 === null) {
-          pos = pos0;
+          result0 = parse_char();
+        }
+        return result0;
+      }
+      
+      function parse_doubleQuoteChar() {
+        var result0;
+        
+        if (input.charCodeAt(pos) === 39) {
+          result0 = "'";
+          pos++;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"'\"");
+          }
+        }
+        if (result0 === null) {
+          result0 = parse_char();
         }
         return result0;
       }
@@ -7373,11 +7400,11 @@ module.exports = (function(){
         // let's give it a shot.
         var i = 0;
         var result = lhs;
-        console.log('leftAssociative', JSON.stringify(lhs), JSON.stringify(rest));
+        // console.log('leftAssociative', JSON.stringify(lhs), JSON.stringify(rest));
         for (i = 0; i < rest.length; ++i) {
            var next = rest[i];
            result = {op: next.op, lhs: result, rhs: next.rhs};
-           console.log('leftAssociative', i, JSON.stringify(result));
+           // console.log('leftAssociative', i, JSON.stringify(result));
         }
         return result;
       }

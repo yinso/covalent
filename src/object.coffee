@@ -99,13 +99,13 @@ class ProxyMap
     # the truth is that there are probably other aliases that are part of the key... hmm...
     # how do we deal with it?
     # we don't want to iterate through everything under the sun... this is fine for now.
-    console.log '_recurSetAlias', path, path2, oldData
+    #console.log '_recurSetAlias', path, path2, oldData
     if oldData instanceof Object
       for key, val of oldData
         oldPath = "#{path}.#{key}"
         newPath = "#{path2}.#{key}"
         proxy = @hasProxy oldPath
-        console.log '_recurSetAliasInner', proxy, oldPath, newPath
+        #console.log '_recurSetAliasInner', proxy, oldPath, newPath
         if proxy
           proxy.prefix = newPath
           @_recurSetAlias oldPath, newPath, val
